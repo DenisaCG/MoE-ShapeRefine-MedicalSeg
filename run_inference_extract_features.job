@@ -1,0 +1,33 @@
+#!/bin/bash
+
+#SBATCH --partition=gpu_a100
+#SBATCH --job-name=medsam_inference
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=4
+#SBATCH --gpus=1
+#SBATCH --mem=16G
+#SBATCH --time=3:00:00
+#SBATCH --output=snellius-scripts/slurm_output_medsam_inference_%A.out
+
+set -euo pipefail
+
+module purge
+module load 2024
+module load Anaconda3/2024.06-1
+
+source activate MoE
+
+cd /home/scur0509/projects/MoE-ShapeRefine-MedicalSeg
+
+echo "job id: ${SLURM_JOB_ID:-unknown}"
+echo "host: $(hostname)"
+echo "start: $(date)"
+echo "cwd: $(pwd)"
+echo "gpu: $(nvidia-smi --query-gpu=name --format=csv,noheader 2>/dev/null || echo 'n/a')"
+
+mkdir -p snellius-scripts
+
+python src/run_medsam_with_pengwin_boxes.py \
+  --resume
+
+echo "end: $(date)"

@@ -1,0 +1,35 @@
+name: MoE
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+
+  - pytorch=2.0
+  - torchvision
+  - torchaudio
+  - pytorch-cuda=11.8
+
+  - numpy
+  - scipy
+  - matplotlib
+  - pillow
+  - tqdm
+  - pyyaml
+
+  - opencv
+  - scikit-image
+  - simpleitk
+  - pip
+
+  - pip:
+    # MedSAM repo dependency (not always fully conda-available)
+    - segment-anything
+
+    # HuggingFace stack used in notebook
+    - transformers>=4.35,<4.45
+    - datasets
+    
+    - accelerate
