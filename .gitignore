@@ -28,4 +28,6 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
-*.swo
+*.swodata_distribution/data_analysis_gt/
+data_distribution/data_analysis_medsam/
+data/medsam-predictions/evaluation_pengwin*.csv

@@ -14,7 +14,9 @@ dependencies:
 
   - numpy
   - scipy
+  - pandas
   - matplotlib
+  - seaborn
   - pillow
   - tqdm
   - pyyaml
