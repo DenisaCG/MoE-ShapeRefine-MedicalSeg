@@ -132,6 +132,45 @@ Useful options:
 - `--threshold 0.5` to change the binary mask cutoff
 - `--case-id 001_0000` or `--sample-name XRAY_PENGWIN_001_0000` to run one sample
 
+### Evaluating First-Stage MedSAM Predictions
+
+First-stage MedSAM predictions can be evaluated with:
+
+```bash
+python evaluation/evaluate_medsam_pengwin.py \
+  --skip-boundary \
+  --num-workers 4 \
+  --output-csv data/medsam-predictions/eval_overlap_full.csv
+```
+
+The evaluator compares MedSAM predicted masks against decoded PENGWIN
+ground-truth fragment masks. Evaluation is done per fragment, not per image, so
+each CSV row corresponds to one fragment / bounding box / predicted mask.
+
+Fast mode with `--skip-boundary` computes:
+
+- Dice / DSC
+- IoU
+
+For boundary metrics on a smaller subset, omit `--skip-boundary`:
+
+```bash
+python evaluation/evaluate_medsam_pengwin.py \
+  --limit 1000 \
+  --num-workers 4 \
+  --output-csv data/medsam-predictions/eval_boundary_1000.csv
+```
+
+This additionally computes:
+
+- HD95
+- ASSD
+
+The script also reports subgroup summaries by anatomy class (`SA`, `LI`, `RI`)
+and by bounding-box size group (`small`, `large`). The size grouping is for MoE
+gating analysis only and does not change the metric calculations.
+
+
 ### Using MedSAM Outputs as MoE Inputs
 
 The outputs above are designed to feed directly into the second-stage MoE

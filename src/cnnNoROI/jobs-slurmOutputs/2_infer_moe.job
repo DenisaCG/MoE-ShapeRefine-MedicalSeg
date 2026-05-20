@@ -1,0 +1,41 @@
+#!/bin/bash
+
+#SBATCH --partition=gpu_a100
+#SBATCH --gpus=1
+#SBATCH --job-name=infer_moe_cnnNoROI
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=4
+#SBATCH --time=02:00:00
+#SBATCH --output=/gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/src/cnnNoROI/slurm_infer_moe_%A.out
+
+# Runs infer_moe.py on the test split.
+# Loads both expert checkpoints, refines each fragment, saves per-image .npz
+# files to data/moe-predictions/binary_masks/ — same format as MedSAM output
+# so evaluate_medsam_pengwin.py can read them unchanged.
+
+set -euo pipefail
+
+module purge
+module load 2024
+module load Anaconda3/2024.06-1
+
+source /sw/arch/RHEL9/EB_production/2024/software/Anaconda3/2024.06-1/etc/profile.d/conda.sh
+conda activate MoE
+
+cd /gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg
+
+echo "========================================"
+echo "job id  : ${SLURM_JOB_ID}"
+echo "host    : $(hostname)"
+echo "start   : $(date)"
+echo "gpu     : $(nvidia-smi --query-gpu=name,memory.total --format=csv,noheader 2>/dev/null || echo 'n/a')"
+echo "========================================"
+
+python src/cnnNoROI/infer_moe.py \
+    --split test \
+    --checkpoint-dir checkpoints/cnnNoROI \
+    --output-dir data/moe-predictions/binary_masks
+
+echo "========================================"
+echo "end : $(date)"
+echo "========================================"

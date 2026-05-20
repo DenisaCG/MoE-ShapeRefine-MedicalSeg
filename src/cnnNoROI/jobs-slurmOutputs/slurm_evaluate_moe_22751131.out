@@ -1,0 +1,110 @@
+============================================================================================== 
+Warning! Mixing Conda and module environments may lead to corruption of the
+user environment. 
+We do not recommend users mixing those two environments unless absolutely
+necessary. Note that 
+SURF does not provide any support for Conda environment.
+For more information, please refer to our software policy page:
+https://servicedesk.surf.nl/wiki/display/WIKI/Software+policy+Snellius#SoftwarepolicySnellius-UseofAnacondaandMinicondaenvironmentsonSnellius 
+
+Remember that many packages have already been installed on the system and can
+be loaded using 
+the 'module load <package__name>' command. If you are uncertain if a package is
+already available 
+on the system, please use 'module avail' or 'module spider' to search for it.
+============================================================================================== 
+========================================
+job id  : 22751131
+host    : tcn46.local.snellius.surf.nl
+start   : Thu May 14 14:52:46 CEST 2026
+========================================
+--delta-only: skipping evaluation, using existing /gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/data/moe-predictions/evaluation_moe.csv
+
+Delta CSV saved: /gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/data/moe-predictions/evaluation_delta.csv
+
+MoE vs MedSAM summary:
+  dice: mean delta = +0.0724  improved = 88.5% of fragments  n = 26457
+  iou: mean delta = +0.0937  improved = 88.5% of fragments  n = 26457
+
+=== MoE evaluation summary ===
+Evaluation summary
+==========================================================================================
+CSV: data/moe-predictions/evaluation_moe.csv
+Image records evaluated: 5000
+Fragment rows written: 26457
+Failed records: not stored in CSV
+Empty predictions: 47
+Empty GT masks: 0
+Area threshold on 1024 grid: 146285.71166992188
+
+Overall mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+overall                        26457         0.7911         0.6688        36.3912        10.3054
+
+Per-class mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+SA                              7083         0.7695         0.6378        39.9859        12.4470
+LI                              9808         0.7984         0.6786        35.2388         9.4727
+RI                              9566         0.7996         0.6816        34.9081         9.5718
+
+Per-size mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+small                          13228         0.7760         0.6514        21.4613         6.7657
+large                          13229         0.8062         0.6861        51.2671        13.8323
+
+Per-class and per-size mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+SA/small                        3127         0.7414         0.6057        25.6352         8.2635
+SA/large                        3956         0.7918         0.6632        51.3040        15.7463
+LI/small                        5188         0.7885         0.6668        19.5489         6.0569
+LI/large                        4620         0.8095         0.6917        52.8169        13.2997
+RI/small                        4913         0.7848         0.6641        20.8217         6.5600
+RI/large                        4653         0.8151         0.7001        49.6968        12.7337
+==========================================================================================
+
+=== MedSAM baseline summary ===
+Evaluation summary
+==========================================================================================
+CSV: data/medsam-predictions/evaluation_pengwin.csv
+Image records evaluated: 50000
+Fragment rows written: 264927
+Failed records: not stored in CSV
+Empty predictions: 75
+Empty GT masks: 0
+Area threshold on 1024 grid: 146463.34837372415
+
+Overall mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+overall                       264927         0.7180         0.5741        39.7355        13.0738
+
+Per-class mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+SA                             71047         0.7194         0.5753        43.4547        14.6702
+LI                             98278         0.7153         0.5708        39.2665        12.6945
+RI                             95602         0.7196         0.5764        37.4540        12.2776
+
+Per-size mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+small                         132462         0.6965         0.5495        22.3871         8.0277
+large                         132465         0.7394         0.5986        57.0736        18.1170
+
+Per-class and per-size mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+SA/small                       30982         0.6905         0.5430        24.8194         8.8550
+SA/large                       40065         0.7418         0.6003        57.8522        19.1630
+LI/small                       51860         0.6996         0.5533        21.1766         7.5858
+LI/large                       46418         0.7328         0.5903        59.4694        18.3999
+RI/small                       49620         0.6969         0.5497        22.1344         7.9732
+RI/large                       45982         0.7441         0.6054        53.9766        16.9201
+==========================================================================================
+========================================
+end : Thu May 14 14:52:54 CEST 2026
+========================================

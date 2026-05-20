@@ -145,24 +145,35 @@ def load_done_sample_names(output_metadata_path: Path) -> set[str]:
     return done
 
 
-def load_and_preprocess_image(path: str | Path, image_size: int = 1024) -> np.ndarray:
+def load_and_preprocess_image(
+    path: str | Path,
+    image_size: int = 1024,
+    window_lower: float = 0.01,
+    window_upper: float = 0.95,
+) -> np.ndarray:
     """Load a raw DRR TIF and return a uint8 (image_size, image_size, 3) array.
 
-    Applies the neglog normalisation used by the PENGWIN challenge baseline:
-    shift to positive → negative log → linear rescale to [0, 1] → uint8.
+    Matches the PENGWIN inference pipeline from build_augmentation(train=False):
+    neglog → quantile window [window_lower, window_upper] → uint8 → resize.
     """
     image = np.array(Image.open(path)).astype(np.float32)
 
-    # neglog: shift to strictly positive then take -log
-    image -= image.min() - 1e-2
+    # neglog: match neglog_fn — add min+epsilon so relative log-spacing is preserved
+    image += image.min() + 1e-3
     image = -np.log(image)
 
-    # linear rescale to [0, 1]
-    lo, hi = image.min(), image.max()
-    if hi > lo:
-        image = (image - lo) / (hi - lo)
+    # Quantile windowing matching pengwin_utils.window(0.01, 0.95).
+    # window() passes args to window_() swapped, so the 95th-pct value is
+    # subtracted and the denominator is (1st-pct - 95th-pct), which is
+    # negative — this inverts the image (air→1/bright, bone→0/dark).
+    q_lo = np.quantile(image, window_lower)   # 1st-pct value
+    q_hi = np.quantile(image, window_upper)   # 95th-pct value
+    if q_lo == q_hi:
+        lo, hi = image.min(), image.max()
+        image = (image - lo) / (hi - lo + 1e-7)
     else:
-        image = np.zeros_like(image)
+        image = (image - q_hi) / (q_lo - q_hi + 1e-7)
+    image = np.clip(image, 0.0, 1.0)
 
     # scale to uint8 and resize
     image = (image * 255).clip(0, 255).astype(np.uint8)

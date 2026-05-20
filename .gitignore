@@ -31,3 +31,6 @@ Thumbs.db
 *.swodata_distribution/data_analysis_gt/
 data_distribution/data_analysis_medsam/
 data/medsam-predictions/evaluation_pengwin*.csv
+
+checkpoints/
+wandb/

@@ -1,0 +1,8 @@
+--delta-only: skipping evaluation, using existing /gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/data/moe-predictions/evaluation_moe.csv
+
+Delta CSV saved: /gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/data/moe-predictions/evaluation_delta.csv
+
+MoE vs MedSAM summary:
+  dice: mean delta = +0.0724  improved = 88.5% of fragments  n = 26457
+  iou: mean delta = +0.0937  improved = 88.5% of fragments  n = 26457
+

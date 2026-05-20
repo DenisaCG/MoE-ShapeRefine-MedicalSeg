@@ -1,0 +1,42 @@
+#!/bin/bash
+
+#SBATCH --partition=rome
+#SBATCH --job-name=evaluate_medsam_baseline
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=16
+#SBATCH --time=04:00:00
+#SBATCH --output=/gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/src/cnnNoROI/slurm_evaluate_medsam_baseline_%A.out
+
+# Evaluates MedSAM first-stage predictions (all 50k images) against PENGWIN GT.
+# Produces data/medsam-predictions/evaluation_pengwin.csv — required by
+# evaluate_moe.job's --delta flag for MoE vs MedSAM comparison.
+#
+# Full boundary metrics (HD95, ASSD) are included. With 16 workers this
+# takes roughly 1–3 hours over 50k images.
+
+set -euo pipefail
+
+module purge
+module load 2024
+module load Anaconda3/2024.06-1
+
+source /sw/arch/RHEL9/EB_production/2024/software/Anaconda3/2024.06-1/etc/profile.d/conda.sh
+conda activate MoE
+
+cd /gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg
+
+echo "========================================"
+echo "job id  : ${SLURM_JOB_ID}"
+echo "host    : $(hostname)"
+echo "start   : $(date)"
+echo "========================================"
+
+python evaluation/evaluate_medsam_pengwin.py \
+    --pred-mask-root  data/medsam-predictions/binary_masks \
+    --pred-metadata   data/medsam-predictions/metadata.jsonl \
+    --output-csv      data/medsam-predictions/evaluation_pengwin.csv \
+    --num-workers     16
+
+echo "========================================"
+echo "end : $(date)"
+echo "========================================"

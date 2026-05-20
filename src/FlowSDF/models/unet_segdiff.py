@@ -316,6 +316,7 @@ class UNetModel(nn.Module):
         num_heads_upsample=-1,
         use_scale_shift_norm=False,
         rrdb_blocks=3,
+        img_cond_channels=3, # needed for FlowSDF expert
     ):
         super().__init__()
 
@@ -344,7 +345,8 @@ class UNetModel(nn.Module):
 
         if self.num_classes is not None:
             self.label_emb = nn.Embedding(num_classes, time_embed_dim)
-        self.rrdb = RRDBNet(nb=rrdb_blocks, out_nc=model_channels)
+        # change needed for FlowSDF expert to take in image conditioning features from RRDBNet
+        self.rrdb = RRDBNet(in_nc=img_cond_channels, nb=rrdb_blocks, out_nc=model_channels)
         self.input_blocks = nn.ModuleList(
             [
                 TimestepEmbedSequential(
