@@ -7,6 +7,11 @@ the most informative fragments:
 
     X-ray | MedSAM | cnnNoROI | cnnROI | GT | Diff(cnnROI vs cnnNoROI)
 
+When FlowSDF inputs are provided, the figures include FlowSDF as an additional
+panel:
+
+    X-ray | MedSAM | cnnNoROI | cnnROI | FlowSDF | GT | Diff(cnnROI vs cnnNoROI)
+
 Diff colour key:
     white = both correct   green = RoI fixed   red = RoI broke   dark = both wrong
 
@@ -16,7 +21,8 @@ Fragment selection (all relative to cnnROI − cnnNoROI delta):
     small      — random sample from expert_small population
     large      — random sample from expert_large population
 
-Also prints a per-group metrics table comparing MedSAM → cnnNoROI → cnnROI.
+Also prints a per-group metrics table comparing cnnNoROI → cnnROI, and FlowSDF
+when available.
 
 Requires (run evaluation jobs first):
     data/moe-predictions/evaluation_moe.csv
@@ -25,6 +31,7 @@ Requires (run evaluation jobs first):
     data/moe-predictions/binary_masks/
     data/roi-predictions/binary_masks/
     data/medsam-predictions/binary_masks/
+    data/flowsdf-moe-predictions/test/binary_masks/  (optional)
     data/medsam-predictions/metadata.jsonl
 
 Usage:
@@ -61,10 +68,12 @@ from dataloader_utils import (
 COLOUR_MEDSAM = (0.2, 0.6, 1.0)    # blue
 COLOUR_NOROI  = (0.8, 0.3, 0.9)    # purple
 COLOUR_ROI    = (1.0, 0.5, 0.0)    # orange
+COLOUR_FLOWSDF = (0.0, 0.85, 0.75)  # teal
 COLOUR_GT     = (0.2, 0.9, 0.2)    # green
 OVERLAY_ALPHA = 0.45
 MASK_SIZE     = 1024
 PAD_PX        = 40
+MERGE_KEYS    = ["sample_name", "fragment_index"]
 
 
 # ---------------------------------------------------------------------------
@@ -168,9 +177,10 @@ def diff_roi_vs_noroi(
 # ---------------------------------------------------------------------------
 
 def print_comparison_table(merged: pd.DataFrame, medsam_csv: Path | None) -> None:
-    """Print MedSAM → cnnNoROI → cnnROI per-group summary."""
+    """Print cnnNoROI → cnnROI, plus FlowSDF when available, per-group summary."""
 
     groups: list[tuple[str, pd.DataFrame]] = [("overall", merged)]
+    has_flowsdf = "dice_flowsdf" in merged.columns
 
     size_col = "size_group_noroi" if "size_group_noroi" in merged.columns else None
     cat_col  = "category_name_noroi" if "category_name_noroi" in merged.columns else None
@@ -182,9 +192,18 @@ def print_comparison_table(merged: pd.DataFrame, medsam_csv: Path | None) -> Non
         for val in merged[cat_col].dropna().unique():
             groups.append((str(val), merged[merged[cat_col] == val]))
 
-    header = f"{'group':<16}{'n':>7}  {'dice_noroi':>10}  {'dice_roi':>8}  {'Δdice':>7}  {'iou_noroi':>9}  {'iou_roi':>7}  {'Δiou':>6}"
+    header = (
+        f"{'group':<16}{'n':>7}  {'dice_noroi':>10}  {'dice_roi':>8}  {'ΔR-N':>7}"
+        f"  {'iou_noroi':>9}  {'iou_roi':>7}  {'ΔR-N':>7}"
+    )
+    if has_flowsdf:
+        header += f"  {'dice_flow':>9}  {'ΔF-N':>7}  {'ΔF-R':>7}  {'iou_flow':>8}  {'ΔF-N':>7}  {'ΔF-R':>7}"
     sep    = "-" * len(header)
-    print("\n=== cnnROI vs cnnNoROI — per-group comparison ===")
+    title = "=== cnnROI vs cnnNoROI"
+    if has_flowsdf:
+        title += " vs FlowSDF"
+    title += " — per-group comparison ==="
+    print(f"\n{title}")
     print(header)
     print(sep)
 
@@ -197,10 +216,19 @@ def print_comparison_table(merged: pd.DataFrame, medsam_csv: Path | None) -> Non
         ir  = sub["iou_roi"].mean()
         dd  = sub["delta_dice"].mean()
         di  = sub["delta_iou"].mean() if "delta_iou" in sub.columns else float("nan")
-        print(
+        line = (
             f"{label:<16}{len(sub):>7}  {dn:>10.4f}  {dr:>8.4f}  {dd:>+7.4f}  "
-            f"{in_:>9.4f}  {ir:>7.4f}  {di:>+6.4f}"
+            f"{in_:>9.4f}  {ir:>7.4f}  {di:>+7.4f}"
         )
+        if has_flowsdf:
+            df_ = sub["dice_flowsdf"].mean()
+            if_ = sub["iou_flowsdf"].mean()
+            dfn = sub["delta_dice_flowsdf_vs_noroi"].mean()
+            dfr = sub["delta_dice_flowsdf_vs_roi"].mean()
+            ifn = sub["delta_iou_flowsdf_vs_noroi"].mean()
+            ifr = sub["delta_iou_flowsdf_vs_roi"].mean()
+            line += f"  {df_:>9.4f}  {dfn:>+7.4f}  {dfr:>+7.4f}  {if_:>8.4f}  {ifn:>+7.4f}  {ifr:>+7.4f}"
+        print(line)
 
     print(sep)
     print()
@@ -216,6 +244,7 @@ def visualize_fragment(
     medsam_root: Path,
     noroi_root: Path,
     roi_root: Path,
+    flowsdf_root: Path | None,
     output_dir: Path,
     group_label: str,
 ) -> None:
@@ -227,22 +256,29 @@ def visualize_fragment(
     size_group    = str(row.get("size_group_noroi", ""))
     dice_noroi    = float(row.get("dice_noroi", float("nan")))
     dice_roi      = float(row.get("dice_roi",   float("nan")))
+    dice_flowsdf  = float(row.get("dice_flowsdf", float("nan")))
     delta_dice    = float(row.get("delta_dice", float("nan")))
     label_path    = resolve_existing_path(str(row.get("original_label_path_noroi", "")))
+    has_flowsdf   = flowsdf_root is not None and "dice_flowsdf" in row.index
 
     # --- load masks ---
     medsam_file = resolve_existing_path(medsam_root / f"{sample_name}.npz")
     noroi_file  = resolve_existing_path(noroi_root  / f"{sample_name}.npz")
     roi_file    = resolve_existing_path(roi_root    / f"{sample_name}.npz")
+    flowsdf_file = resolve_existing_path(flowsdf_root / f"{sample_name}.npz") if has_flowsdf else None
 
     for fpath, name in [(medsam_file, "medsam"), (noroi_file, "noroi"), (roi_file, "roi")]:
         if not fpath.exists():
             print(f"  SKIP {sample_name}: {name} mask file missing ({fpath})")
             return
+    if flowsdf_file is not None and not flowsdf_file.exists():
+        print(f"  SKIP {sample_name}: flowsdf mask file missing ({flowsdf_file})")
+        return
 
     medsam_mask = load_prediction_masks(medsam_file)[instance_idx]
     noroi_mask  = load_prediction_masks(noroi_file)[instance_idx]
     roi_mask    = load_prediction_masks(roi_file)[instance_idx]
+    flowsdf_mask = load_prediction_masks(flowsdf_file)[instance_idx] if flowsdf_file is not None else None
 
     # --- load GT ---
     if not label_path.exists():
@@ -279,21 +315,29 @@ def visualize_fragment(
     medsam_crop = crop(medsam_mask, bbox)
     noroi_crop  = crop(noroi_mask,  bbox)
     roi_crop    = crop(roi_mask,    bbox)
+    flowsdf_crop = crop(flowsdf_mask, bbox) if flowsdf_mask is not None else None
     gt_crop     = crop(gt_1024,     bbox)
 
-    # --- 6 panels ---
+    # --- panels ---
     panel_xray   = np.stack([xray_disp / 255.0] * 3, axis=-1)
     panel_medsam = overlay(xray_disp, medsam_crop, COLOUR_MEDSAM, OVERLAY_ALPHA)
     panel_noroi  = overlay(xray_disp, noroi_crop,  COLOUR_NOROI,  OVERLAY_ALPHA)
     panel_roi    = overlay(xray_disp, roi_crop,    COLOUR_ROI,    OVERLAY_ALPHA)
+    panel_flowsdf = overlay(xray_disp, flowsdf_crop, COLOUR_FLOWSDF, OVERLAY_ALPHA) if flowsdf_crop is not None else None
     panel_gt     = overlay(xray_disp, gt_crop,     COLOUR_GT,     OVERLAY_ALPHA)
     panel_diff   = diff_roi_vs_noroi(roi_crop, noroi_crop, gt_crop)
 
-    fig, axes = plt.subplots(1, 6, figsize=(24, 4))
-    fig.patch.set_facecolor("#1a1a1a")
+    if panel_flowsdf is None:
+        panels = [panel_xray, panel_medsam, panel_noroi, panel_roi, panel_gt, panel_diff]
+        titles = ["X-ray", "MedSAM", "cnnNoROI", "cnnROI", "Ground truth", "Diff (RoI vs NoRoI)"]
+        fig_width = 24
+    else:
+        panels = [panel_xray, panel_medsam, panel_noroi, panel_roi, panel_flowsdf, panel_gt, panel_diff]
+        titles = ["X-ray", "MedSAM", "cnnNoROI", "cnnROI", "FlowSDF", "Ground truth", "Diff (RoI vs NoRoI)"]
+        fig_width = 28
 
-    panels = [panel_xray, panel_medsam, panel_noroi, panel_roi, panel_gt, panel_diff]
-    titles = ["X-ray", "MedSAM", "cnnNoROI", "cnnROI", "Ground truth", "Diff (RoI vs NoRoI)"]
+    fig, axes = plt.subplots(1, len(panels), figsize=(fig_width, 4))
+    fig.patch.set_facecolor("#1a1a1a")
 
     for ax, panel, title in zip(axes, panels, titles):
         ax.imshow(panel, interpolation="nearest")
@@ -302,6 +346,11 @@ def visualize_fragment(
 
     axes[2].set_xlabel(f"Dice {dice_noroi:.3f}", color="#cc88ff", fontsize=9)
     axes[3].set_xlabel(f"Dice {dice_roi:.3f}  (Δ {delta_dice:+.3f})", color="#ffaa44", fontsize=9)
+    if panel_flowsdf is not None:
+        axes[4].set_xlabel(f"Dice {dice_flowsdf:.3f}", color="#66ffee", fontsize=9)
+        diff_ax = axes[6]
+    else:
+        diff_ax = axes[5]
 
     legend_patches = [
         mpatches.Patch(color=(0.10, 0.85, 0.10), label="RoI fixed"),
@@ -309,7 +358,7 @@ def visualize_fragment(
         mpatches.Patch(color=(1.00, 1.00, 1.00), label="Both correct"),
         mpatches.Patch(color=(0.15, 0.15, 0.15), label="Both wrong"),
     ]
-    axes[5].legend(
+    diff_ax.legend(
         handles=legend_patches, loc="lower center",
         bbox_to_anchor=(0.5, -0.22), ncol=2,
         fontsize=8, framealpha=0.3, labelcolor="white",
@@ -317,9 +366,11 @@ def visualize_fragment(
     )
 
     sign = "+" if delta_dice >= 0 else ""
+    flow_text = f" · FlowSDF {dice_flowsdf:.3f}" if panel_flowsdf is not None else ""
     fig.suptitle(
         f"{sample_name}  ·  {category_name}  ·  {size_group}  ·  "
-        f"NoRoI {dice_noroi:.3f} → RoI {dice_roi:.3f}  ({sign}{delta_dice:.3f})  [{group_label}]",
+        f"NoRoI {dice_noroi:.3f} → RoI {dice_roi:.3f}  ({sign}{delta_dice:.3f})"
+        f"{flow_text}  [{group_label}]",
         color="white", fontsize=10, y=1.01,
     )
     plt.tight_layout()
@@ -338,19 +389,33 @@ def visualize_fragment(
 # CSV merge and fragment selection
 # ---------------------------------------------------------------------------
 
-def build_comparison_df(noroi_csv: Path, roi_csv: Path) -> pd.DataFrame:
-    """Merge the two evaluation CSVs and compute per-fragment deltas."""
+def suffix_non_key_columns(df: pd.DataFrame, suffix: str) -> pd.DataFrame:
+    rename = {col: f"{col}_{suffix}" for col in df.columns if col not in MERGE_KEYS}
+    return df.rename(columns=rename)
+
+
+def build_comparison_df(noroi_csv: Path, roi_csv: Path, flowsdf_csv: Path | None = None) -> pd.DataFrame:
+    """Merge evaluation CSVs and compute per-fragment deltas."""
     noroi = pd.read_csv(noroi_csv)
     roi   = pd.read_csv(roi_csv)
 
-    merged = noroi.merge(roi, on=["sample_name", "fragment_index"],
-                         suffixes=("_noroi", "_roi"))
+    merged = noroi.merge(roi, on=MERGE_KEYS, suffixes=("_noroi", "_roi"))
+
+    if flowsdf_csv is not None:
+        flowsdf = suffix_non_key_columns(pd.read_csv(flowsdf_csv), "flowsdf")
+        merged = merged.merge(flowsdf, on=MERGE_KEYS)
 
     for metric in ["dice", "iou", "hd95", "assd"]:
         col_roi   = f"{metric}_roi"
         col_noroi = f"{metric}_noroi"
         if col_roi in merged.columns and col_noroi in merged.columns:
             merged[f"delta_{metric}"] = merged[col_roi] - merged[col_noroi]
+        col_flowsdf = f"{metric}_flowsdf"
+        if col_flowsdf in merged.columns:
+            if col_noroi in merged.columns:
+                merged[f"delta_{metric}_flowsdf_vs_noroi"] = merged[col_flowsdf] - merged[col_noroi]
+            if col_roi in merged.columns:
+                merged[f"delta_{metric}_flowsdf_vs_roi"] = merged[col_flowsdf] - merged[col_roi]
 
     return merged
 
@@ -403,6 +468,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--roi-csv", type=Path,
                         default=PROJECT_ROOT / "data" / "roi-predictions" / "evaluation_roi.csv",
                         help="cnnROI evaluation CSV.")
+    parser.add_argument("--flowsdf-csv", type=Path, default=None,
+                        help="Optional FlowSDF evaluation CSV.")
     parser.add_argument("--medsam-csv", type=Path,
                         default=PROJECT_ROOT / "data" / "medsam-predictions" / "evaluation_pengwin.csv",
                         help="MedSAM baseline CSV (used for the table only).")
@@ -412,6 +479,8 @@ def parse_args() -> argparse.Namespace:
                         default=PROJECT_ROOT / "data" / "moe-predictions" / "binary_masks")
     parser.add_argument("--roi-mask-root", type=Path,
                         default=PROJECT_ROOT / "data" / "roi-predictions" / "binary_masks")
+    parser.add_argument("--flowsdf-mask-root", type=Path, default=None,
+                        help="Optional FlowSDF binary mask directory.")
     parser.add_argument("--metadata", type=Path,
                         default=PROJECT_ROOT / "data" / "medsam-predictions" / "metadata.jsonl")
     parser.add_argument("--output-dir", type=Path,
@@ -432,11 +501,15 @@ def main() -> None:
     for path, name in [(args.noroi_csv, "--noroi-csv"), (args.roi_csv, "--roi-csv")]:
         if not path.exists():
             raise FileNotFoundError(f"{name} not found: {path}")
+    if args.flowsdf_csv is not None and not args.flowsdf_csv.exists():
+        raise FileNotFoundError(f"--flowsdf-csv not found: {args.flowsdf_csv}")
+    if args.flowsdf_csv is not None and args.flowsdf_mask_root is None:
+        raise ValueError("--flowsdf-mask-root is required when --flowsdf-csv is provided")
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
 
     print(f"Loading evaluation CSVs …")
-    merged = build_comparison_df(args.noroi_csv, args.roi_csv)
+    merged = build_comparison_df(args.noroi_csv, args.roi_csv, args.flowsdf_csv)
     print(f"  {len(merged)} matched fragments")
 
     print_comparison_table(merged, args.medsam_csv if args.medsam_csv.exists() else None)
@@ -462,6 +535,7 @@ def main() -> None:
             medsam_root=args.medsam_mask_root,
             noroi_root=args.noroi_mask_root,
             roi_root=args.roi_mask_root,
+            flowsdf_root=args.flowsdf_mask_root,
             output_dir=args.output_dir,
             group_label=group_label,
         )
