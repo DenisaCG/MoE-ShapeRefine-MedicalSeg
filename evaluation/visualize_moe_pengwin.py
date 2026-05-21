@@ -184,6 +184,7 @@ def visualize_fragment(
     moe_root: Path,
     output_dir: Path,
     group_label: str,
+    method_label: str,
 ) -> None:
     sample_name      = row["sample_name"]
     instance_idx     = int(row["medsam_instance_id_moe"]) - 1   # 0-based
@@ -258,7 +259,7 @@ def visualize_fragment(
     fig.patch.set_facecolor("#1a1a1a")
 
     panels = [panel_xray, panel_medsam, panel_moe, panel_gt, panel_diff]
-    titles = ["X-ray", "MedSAM", "MoE refined", "Ground truth", "Diff"]
+    titles = ["X-ray", "MedSAM", method_label, "Ground truth", "Diff"]
 
     for ax, panel, title in zip(axes, panels, titles):
         ax.imshow(panel, interpolation="nearest")
@@ -364,6 +365,8 @@ def parse_args() -> argparse.Namespace:
                         default=PROJECT_ROOT / "data" / "medsam-predictions" / "metadata.jsonl")
     parser.add_argument("--output-dir",     type=Path,
                         default=PROJECT_ROOT / "data" / "moe-predictions" / "visualizations")
+    parser.add_argument("--method-label",   default="MoE refined",
+                        help="Title for the refined-mask panel.")
     parser.add_argument("--n-best",         type=int, default=5,
                         help="Number of best-improvement fragments.")
     parser.add_argument("--n-worst",        type=int, default=5,
@@ -413,6 +416,7 @@ def main() -> None:
             moe_root=args.moe_mask_root,
             output_dir=args.output_dir,
             group_label=group_label,
+            method_label=args.method_label,
         )
 
     print(f"\nDone. {len(fragments)} figures saved to: {args.output_dir}")
