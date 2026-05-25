@@ -78,7 +78,7 @@ echo ""
 
 # ========== FULL TRAINING ==========
 echo "========================================"
-echo "FULL TRAINING: 100 epochs, both experts"
+echo "FULL TRAINING: 20 epochs, both experts"
 echo "========================================"
 python train_flowsdf_moe.py \
     --expert both \

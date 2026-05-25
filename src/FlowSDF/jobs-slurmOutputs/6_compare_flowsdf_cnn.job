@@ -15,7 +15,7 @@
 #
 # Outputs:
 #   data/flowsdf-moe-predictions/test/comparisons/*.png
-#     7-panel figures: X-ray | MedSAM | cnnNoROI | cnnROI | FlowSDF | GT | Diff(RoI vs NoRoI)
+#     6-panel figures: MedSAM | cnnROI | cnnNoROI | FlowSDF | GT | Diff(all methods)
 #   Printed metrics table in this .out file.
 
 set -euo pipefail
@@ -46,7 +46,9 @@ python evaluation/compare_roi_noroi_pengwin.py \
     --n-roi-wins 5 \
     --n-roi-loses 5 \
     --n-random-small 5 \
-    --n-random-large 5
+    --n-random-large 5 \
+    --no-xray \
+    --swap-cnn-order
 
 echo "========================================"
 echo "end : $(date)"

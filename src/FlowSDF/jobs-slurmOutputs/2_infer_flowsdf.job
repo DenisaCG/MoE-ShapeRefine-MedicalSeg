@@ -5,7 +5,7 @@
 #SBATCH --job-name=infer_flowsdf_FlowSDF
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=4
-#SBATCH --time=06:00:00
+#SBATCH --time=12:00:00
 #SBATCH --output=/gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/src/FlowSDF/jobs-slurmOutputs/slurm_infer_flowsdf_%A.out
 
 # Runs infer_flowsdf_moe.py on the test split.
@@ -44,7 +44,7 @@ python src/FlowSDF/infer_flowsdf_moe.py \
     --img-size 128 \
     --ode-steps 4 \
     --n-eval 1 \
-    --skip-existing
+    # --skip-existing
 
 echo "========================================"
 echo "end : $(date)"

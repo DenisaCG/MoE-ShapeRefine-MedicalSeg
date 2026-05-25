@@ -10,10 +10,11 @@ the most informative fragments:
 When FlowSDF inputs are provided, the figures include FlowSDF as an additional
 panel:
 
-    X-ray | MedSAM | cnnNoROI | cnnROI | FlowSDF | GT | Diff(cnnROI vs cnnNoROI)
+    X-ray | MedSAM | cnnNoROI | cnnROI | FlowSDF | GT | Diff(all methods)
 
 Diff colour key:
-    white = both correct   green = RoI fixed   red = RoI broke   dark = both wrong
+    method colours = exactly that method/those methods correct
+    white = all correct   dark = all wrong
 
 Fragment selection (all relative to cnnROI − cnnNoROI delta):
     roi_wins   — largest positive delta_dice  (RoI crops helped most)
@@ -172,6 +173,70 @@ def diff_roi_vs_noroi(
     return rgb
 
 
+def diff_all_methods(
+    noroi: np.ndarray,
+    roi: np.ndarray,
+    flowsdf: np.ndarray,
+    gt: np.ndarray,
+) -> np.ndarray:
+    """
+    Show which methods are correct per pixel.
+
+    Exact method colours mark single-method correctness; blended colours mark
+    two-method correctness; white means all methods correct; dark means all
+    methods wrong.
+    """
+    noroi_ok = (noroi == gt).astype(bool)
+    roi_ok = (roi == gt).astype(bool)
+    flowsdf_ok = (flowsdf == gt).astype(bool)
+
+    noroi_colour = np.array(COLOUR_NOROI, dtype=np.float32)
+    roi_colour = np.array(COLOUR_ROI, dtype=np.float32)
+    flowsdf_colour = np.array(COLOUR_FLOWSDF, dtype=np.float32)
+
+    rgb = np.zeros((*gt.shape, 3), dtype=np.float32)
+    rgb[~noroi_ok & ~roi_ok & ~flowsdf_ok] = [0.15, 0.15, 0.15]
+    rgb[ noroi_ok &  roi_ok &  flowsdf_ok] = [1.00, 1.00, 1.00]
+    rgb[ noroi_ok & ~roi_ok & ~flowsdf_ok] = noroi_colour
+    rgb[~noroi_ok &  roi_ok & ~flowsdf_ok] = roi_colour
+    rgb[~noroi_ok & ~roi_ok &  flowsdf_ok] = flowsdf_colour
+    rgb[ noroi_ok &  roi_ok & ~flowsdf_ok] = (noroi_colour + roi_colour) / 2.0
+    rgb[ noroi_ok & ~roi_ok &  flowsdf_ok] = (noroi_colour + flowsdf_colour) / 2.0
+    rgb[~noroi_ok &  roi_ok &  flowsdf_ok] = (roi_colour + flowsdf_colour) / 2.0
+    return rgb
+
+
+def dice_score(pred: np.ndarray, gt: np.ndarray) -> float:
+    pred_b = pred.astype(bool)
+    gt_b = gt.astype(bool)
+    denom = pred_b.sum() + gt_b.sum()
+    if denom == 0:
+        return 1.0
+    return float(2.0 * np.logical_and(pred_b, gt_b).sum() / denom)
+
+
+def annotate_panel_score(ax: plt.Axes, text: str, color: str) -> None:
+    """Draw a compact score label inside the lower-right corner of a panel."""
+    ax.text(
+        0.985,
+        0.035,
+        text,
+        transform=ax.transAxes,
+        ha="right",
+        va="bottom",
+        color=color,
+        fontsize=8.5,
+        fontweight="bold",
+        linespacing=1.15,
+        bbox={
+            "boxstyle": "round,pad=0.28",
+            "facecolor": "#000000",
+            "edgecolor": "none",
+            "alpha": 0.68,
+        },
+    )
+
+
 # ---------------------------------------------------------------------------
 # Metrics table
 # ---------------------------------------------------------------------------
@@ -247,24 +312,26 @@ def visualize_fragment(
     flowsdf_root: Path | None,
     output_dir: Path,
     group_label: str,
+    no_xray: bool = False,
+    swap_cnn_order: bool = False,
 ) -> None:
-    sample_name   = row["sample_name"]
-    instance_idx  = int(row["medsam_instance_id_noroi"]) - 1
-    category_id   = int(row["category_id_noroi"])
-    fragment_id   = int(row["fragment_id_noroi"])
+    sample_name = row["sample_name"]
+    instance_idx = int(row["medsam_instance_id_noroi"]) - 1
+    category_id = int(row["category_id_noroi"])
+    fragment_id = int(row["fragment_id_noroi"])
     category_name = str(row.get("category_name_noroi", ""))
-    size_group    = str(row.get("size_group_noroi", ""))
-    dice_noroi    = float(row.get("dice_noroi", float("nan")))
-    dice_roi      = float(row.get("dice_roi",   float("nan")))
-    dice_flowsdf  = float(row.get("dice_flowsdf", float("nan")))
-    delta_dice    = float(row.get("delta_dice", float("nan")))
-    label_path    = resolve_existing_path(str(row.get("original_label_path_noroi", "")))
-    has_flowsdf   = flowsdf_root is not None and "dice_flowsdf" in row.index
+    size_group = str(row.get("size_group_noroi", ""))
+    dice_noroi = float(row.get("dice_noroi", float("nan")))
+    dice_roi = float(row.get("dice_roi", float("nan")))
+    dice_flowsdf = float(row.get("dice_flowsdf", float("nan")))
+    delta_dice = float(row.get("delta_dice", float("nan")))
+    label_path = resolve_existing_path(str(row.get("original_label_path_noroi", "")))
+    has_flowsdf = flowsdf_root is not None and "dice_flowsdf" in row.index
 
     # --- load masks ---
     medsam_file = resolve_existing_path(medsam_root / f"{sample_name}.npz")
-    noroi_file  = resolve_existing_path(noroi_root  / f"{sample_name}.npz")
-    roi_file    = resolve_existing_path(roi_root    / f"{sample_name}.npz")
+    noroi_file = resolve_existing_path(noroi_root / f"{sample_name}.npz")
+    roi_file = resolve_existing_path(roi_root / f"{sample_name}.npz")
     flowsdf_file = resolve_existing_path(flowsdf_root / f"{sample_name}.npz") if has_flowsdf else None
 
     for fpath, name in [(medsam_file, "medsam"), (noroi_file, "noroi"), (roi_file, "roi")]:
@@ -276,18 +343,16 @@ def visualize_fragment(
         return
 
     medsam_mask = load_prediction_masks(medsam_file)[instance_idx]
-    noroi_mask  = load_prediction_masks(noroi_file)[instance_idx]
-    roi_mask    = load_prediction_masks(roi_file)[instance_idx]
+    noroi_mask = load_prediction_masks(noroi_file)[instance_idx]
+    roi_mask = load_prediction_masks(roi_file)[instance_idx]
     flowsdf_mask = load_prediction_masks(flowsdf_file)[instance_idx] if flowsdf_file is not None else None
 
     # --- load GT ---
     if not label_path.exists():
         print(f"  SKIP {sample_name}: GT label missing at {label_path}")
         return
-    seg    = load_pengwin_label(label_path)
-    gt_448 = decode_pengwin_fragment_from_record(
-        seg, {"category_id": category_id, "fragment_id": fragment_id}
-    )
+    seg = load_pengwin_label(label_path)
+    gt_448 = decode_pengwin_fragment_from_record(seg, {"category_id": category_id, "fragment_id": fragment_id})
     gt_1024 = resize_mask(gt_448, (MASK_SIZE, MASK_SIZE))
 
     # --- bounding box from GT (fall back to roi or noroi mask) ---
@@ -301,40 +366,61 @@ def visualize_fragment(
     # --- X-ray ---
     xray_full = load_xray(xray_map.get(sample_name, Path("__missing__")))
     if xray_full is not None and xray_full.shape != (MASK_SIZE, MASK_SIZE):
-        xray_full = np.array(
-            Image.fromarray(xray_full).resize((MASK_SIZE, MASK_SIZE), Image.BILINEAR),
-            dtype=np.uint8,
-        )
-    crop_hw   = (bbox[1] - bbox[0], bbox[3] - bbox[2])
-    xray_disp = xray_to_display(
-        crop(xray_full, bbox) if xray_full is not None else None,
-        crop_hw,
-    )
+        xray_full = np.array(Image.fromarray(xray_full).resize((MASK_SIZE, MASK_SIZE), Image.BILINEAR), dtype=np.uint8)
+    crop_hw = (bbox[1] - bbox[0], bbox[3] - bbox[2])
+    xray_disp = xray_to_display(crop(xray_full, bbox) if xray_full is not None else None, crop_hw)
 
     # --- crop all masks ---
     medsam_crop = crop(medsam_mask, bbox)
-    noroi_crop  = crop(noroi_mask,  bbox)
-    roi_crop    = crop(roi_mask,    bbox)
+    noroi_crop = crop(noroi_mask, bbox)
+    roi_crop = crop(roi_mask, bbox)
     flowsdf_crop = crop(flowsdf_mask, bbox) if flowsdf_mask is not None else None
-    gt_crop     = crop(gt_1024,     bbox)
+    gt_crop = crop(gt_1024, bbox)
+    dice_medsam = dice_score(medsam_mask, gt_1024)
+    delta_noroi_vs_medsam = dice_noroi - dice_medsam
+    delta_roi_vs_medsam = dice_roi - dice_medsam
+    delta_flowsdf_vs_medsam = dice_flowsdf - dice_medsam
 
-    # --- panels ---
-    panel_xray   = np.stack([xray_disp / 255.0] * 3, axis=-1)
+    # --- panels assembly ---
+    panel_xray = np.stack([xray_disp / 255.0] * 3, axis=-1)
     panel_medsam = overlay(xray_disp, medsam_crop, COLOUR_MEDSAM, OVERLAY_ALPHA)
-    panel_noroi  = overlay(xray_disp, noroi_crop,  COLOUR_NOROI,  OVERLAY_ALPHA)
-    panel_roi    = overlay(xray_disp, roi_crop,    COLOUR_ROI,    OVERLAY_ALPHA)
+    panel_noroi = overlay(xray_disp, noroi_crop, COLOUR_NOROI, OVERLAY_ALPHA)
+    panel_roi = overlay(xray_disp, roi_crop, COLOUR_ROI, OVERLAY_ALPHA)
     panel_flowsdf = overlay(xray_disp, flowsdf_crop, COLOUR_FLOWSDF, OVERLAY_ALPHA) if flowsdf_crop is not None else None
-    panel_gt     = overlay(xray_disp, gt_crop,     COLOUR_GT,     OVERLAY_ALPHA)
-    panel_diff   = diff_roi_vs_noroi(roi_crop, noroi_crop, gt_crop)
+    panel_gt = overlay(xray_disp, gt_crop, COLOUR_GT, OVERLAY_ALPHA)
+    panel_diff = (
+        diff_all_methods(noroi_crop, roi_crop, flowsdf_crop, gt_crop)
+        if flowsdf_crop is not None
+        else diff_roi_vs_noroi(roi_crop, noroi_crop, gt_crop)
+    )
 
-    if panel_flowsdf is None:
-        panels = [panel_xray, panel_medsam, panel_noroi, panel_roi, panel_gt, panel_diff]
-        titles = ["X-ray", "MedSAM", "cnnNoROI", "cnnROI", "Ground truth", "Diff (RoI vs NoRoI)"]
-        fig_width = 24
+    panels: list[np.ndarray | None] = []
+    titles: list[str] = []
+
+    if not no_xray:
+        panels.append(panel_xray)
+        titles.append("X-ray")
+
+    panels.append(panel_medsam)
+    titles.append("MedSAM")
+
+    if swap_cnn_order:
+        panels.extend([panel_roi, panel_noroi])
+        titles.extend(["cnnROI", "cnnNoROI"])
     else:
-        panels = [panel_xray, panel_medsam, panel_noroi, panel_roi, panel_flowsdf, panel_gt, panel_diff]
-        titles = ["X-ray", "MedSAM", "cnnNoROI", "cnnROI", "FlowSDF", "Ground truth", "Diff (RoI vs NoRoI)"]
-        fig_width = 28
+        panels.extend([panel_noroi, panel_roi])
+        titles.extend(["cnnNoROI", "cnnROI"])
+
+    if panel_flowsdf is not None:
+        panels.append(panel_flowsdf)
+        titles.append("FlowSDF")
+
+    panels.append(panel_gt)
+    titles.append("Ground truth")
+    panels.append(panel_diff)
+    titles.append("Diff (all methods)" if panel_flowsdf is not None else "Diff (RoI vs NoRoI)")
+
+    fig_width = 28 if panel_flowsdf is not None else 24
 
     fig, axes = plt.subplots(1, len(panels), figsize=(fig_width, 4))
     fig.patch.set_facecolor("#1a1a1a")
@@ -344,33 +430,69 @@ def visualize_fragment(
         ax.set_title(title, color="white", fontsize=10, pad=4)
         ax.axis("off")
 
-    axes[2].set_xlabel(f"Dice {dice_noroi:.3f}", color="#cc88ff", fontsize=9)
-    axes[3].set_xlabel(f"Dice {dice_roi:.3f}  (Δ {delta_dice:+.3f})", color="#ffaa44", fontsize=9)
-    if panel_flowsdf is not None:
-        axes[4].set_xlabel(f"Dice {dice_flowsdf:.3f}", color="#66ffee", fontsize=9)
-        diff_ax = axes[6]
-    else:
-        diff_ax = axes[5]
+    # dynamic label indices
+    idx = 0
+    if not no_xray:
+        idx += 1
+    medsam_idx = idx
+    idx += 1  # medsam
 
-    legend_patches = [
-        mpatches.Patch(color=(0.10, 0.85, 0.10), label="RoI fixed"),
-        mpatches.Patch(color=(0.90, 0.10, 0.10), label="RoI broke"),
-        mpatches.Patch(color=(1.00, 1.00, 1.00), label="Both correct"),
-        mpatches.Patch(color=(0.15, 0.15, 0.15), label="Both wrong"),
-    ]
+    if swap_cnn_order:
+        roi_idx = idx
+        noroi_idx = idx + 1
+    else:
+        noroi_idx = idx
+        roi_idx = idx + 1
+    idx += 2
+
+    flowsdf_idx = None
+    if panel_flowsdf is not None:
+        flowsdf_idx = idx
+        idx += 1
+
+    idx += 1
+    diff_idx = idx
+
+    annotate_panel_score(axes[medsam_idx], f"Dice {dice_medsam:.3f}\nΔMedSAM {0.0:+.3f}", "#3399ff")
+    annotate_panel_score(axes[noroi_idx], f"Dice {dice_noroi:.3f}\nΔMedSAM {delta_noroi_vs_medsam:+.3f}", "#cc4de6")
+    annotate_panel_score(axes[roi_idx], f"Dice {dice_roi:.3f}\nΔMedSAM {delta_roi_vs_medsam:+.3f}", "#ff8000")
+    if flowsdf_idx is not None:
+        annotate_panel_score(axes[flowsdf_idx], f"Dice {dice_flowsdf:.3f}\nΔMedSAM {delta_flowsdf_vs_medsam:+.3f}", "#00d9bf")
+    diff_ax = axes[diff_idx]
+
+    if panel_flowsdf is not None:
+        noroi_colour = np.array(COLOUR_NOROI)
+        roi_colour = np.array(COLOUR_ROI)
+        flowsdf_colour = np.array(COLOUR_FLOWSDF)
+        legend_patches = [
+            mpatches.Patch(color=COLOUR_NOROI, label="NoRoI only"),
+            mpatches.Patch(color=COLOUR_ROI, label="RoI only"),
+            mpatches.Patch(color=COLOUR_FLOWSDF, label="FlowSDF only"),
+            mpatches.Patch(color=tuple((noroi_colour + roi_colour) / 2.0), label="NoRoI + RoI"),
+            mpatches.Patch(color=tuple((noroi_colour + flowsdf_colour) / 2.0), label="NoRoI + FlowSDF"),
+            mpatches.Patch(color=tuple((roi_colour + flowsdf_colour) / 2.0), label="RoI + FlowSDF"),
+            mpatches.Patch(color=(1.00, 1.00, 1.00), label="All correct"),
+            mpatches.Patch(color=(0.15, 0.15, 0.15), label="All wrong"),
+        ]
+        legend_columns = 4
+    else:
+        legend_patches = [
+            mpatches.Patch(color=(0.10, 0.85, 0.10), label="RoI fixed"),
+            mpatches.Patch(color=(0.90, 0.10, 0.10), label="RoI broke"),
+            mpatches.Patch(color=(1.00, 1.00, 1.00), label="Both correct"),
+            mpatches.Patch(color=(0.15, 0.15, 0.15), label="Both wrong"),
+        ]
+        legend_columns = 2
     diff_ax.legend(
         handles=legend_patches, loc="lower center",
-        bbox_to_anchor=(0.5, -0.22), ncol=2,
+        bbox_to_anchor=(0.5, -0.22), ncol=legend_columns,
         fontsize=8, framealpha=0.3, labelcolor="white",
         facecolor="#1a1a1a",
     )
 
-    sign = "+" if delta_dice >= 0 else ""
-    flow_text = f" · FlowSDF {dice_flowsdf:.3f}" if panel_flowsdf is not None else ""
     fig.suptitle(
         f"{sample_name}  ·  {category_name}  ·  {size_group}  ·  "
-        f"NoRoI {dice_noroi:.3f} → RoI {dice_roi:.3f}  ({sign}{delta_dice:.3f})"
-        f"{flow_text}  [{group_label}]",
+        f"[{group_label}]",
         color="white", fontsize=10, y=1.01,
     )
     plt.tight_layout()
@@ -492,6 +614,20 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--n-random-small", type=int, default=5)
     parser.add_argument("--n-random-large", type=int, default=5)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument(
+        "--case-id", type=str, default=None,
+        help="If set, restrict fragment selection to rows whose sample_name contains this string.",
+    )
+    parser.add_argument(
+        "--no-xray",
+        action="store_true",
+        help="Exclude the X-ray panel from generated figures.",
+    )
+    parser.add_argument(
+        "--swap-cnn-order",
+        action="store_true",
+        help="Show cnnROI before cnnNoROI in the figure panels.",
+    )
     return parser.parse_args()
 
 
@@ -517,6 +653,13 @@ def main() -> None:
     print("Building X-ray image map …")
     xray_map = build_image_map(args.metadata)
 
+    if args.case_id:
+        before = len(merged)
+        merged = merged[merged["sample_name"].str.contains(args.case_id, na=False)]
+        print(f"Filtered to case '{args.case_id}': {len(merged)}/{before} fragments")
+        if merged.empty:
+            raise SystemExit(f"No fragments matched --case-id '{args.case_id}'")
+
     fragments = select_fragments(
         merged,
         n_roi_wins=args.n_roi_wins,
@@ -538,6 +681,8 @@ def main() -> None:
             flowsdf_root=args.flowsdf_mask_root,
             output_dir=args.output_dir,
             group_label=group_label,
+            no_xray=args.no_xray,
+            swap_cnn_order=args.swap_cnn_order,
         )
 
     print(f"\nDone. {len(fragments)} figures saved to: {args.output_dir}")

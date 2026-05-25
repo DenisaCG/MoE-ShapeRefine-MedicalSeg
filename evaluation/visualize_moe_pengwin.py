@@ -173,6 +173,28 @@ def diff_image(moe: np.ndarray, medsam: np.ndarray, gt: np.ndarray) -> np.ndarra
     return rgb
 
 
+def annotate_panel_score(ax: plt.Axes, text: str, color: str) -> None:
+    """Draw a compact score label inside the lower-right corner of a panel."""
+    ax.text(
+        0.985,
+        0.035,
+        text,
+        transform=ax.transAxes,
+        ha="right",
+        va="bottom",
+        color=color,
+        fontsize=9,
+        fontweight="bold",
+        linespacing=1.15,
+        bbox={
+            "boxstyle": "round,pad=0.28",
+            "facecolor": "#000000",
+            "edgecolor": "none",
+            "alpha": 0.68,
+        },
+    )
+
+
 # ---------------------------------------------------------------------------
 # Per-fragment figure
 # ---------------------------------------------------------------------------
@@ -266,9 +288,9 @@ def visualize_fragment(
         ax.set_title(title, color="white", fontsize=11, pad=4)
         ax.axis("off")
 
-    # Metric annotations under MedSAM and MoE panels
-    axes[1].set_xlabel(f"Dice {dice_medsam:.3f}", color="#88bbff", fontsize=10)
-    axes[2].set_xlabel(f"Dice {dice_moe:.3f}  (Δ {delta_dice:+.3f})", color="#ffaa44", fontsize=10)
+    # Metric annotations inside method panels, so they remain visible per image.
+    annotate_panel_score(axes[1], f"Dice {dice_medsam:.3f}\nΔ {0.0:+.3f}", "#88bbff")
+    annotate_panel_score(axes[2], f"Dice {dice_moe:.3f}\nΔ {delta_dice:+.3f}", "#ffaa44")
 
     # Diff legend
     legend_patches = [
@@ -284,10 +306,8 @@ def visualize_fragment(
         facecolor="#1a1a1a",
     )
 
-    sign = "+" if delta_dice >= 0 else ""
     suptitle = (
         f"{sample_name}  ·  {category_name}  ·  {size_group}  ·  "
-        f"Dice {dice_medsam:.3f} → {dice_moe:.3f}  ({sign}{delta_dice:.3f})  "
         f"[{group_label}]"
     )
     fig.suptitle(suptitle, color="white", fontsize=11, y=1.01)
