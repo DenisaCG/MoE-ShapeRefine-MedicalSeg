@@ -1,0 +1,7 @@
+criterion,area_cutoff,metric_column,target_value
+mean_dice_above_0.70,5984.0,rolling_mean_dice,0.7
+mean_dice_above_0.75,35135.0,rolling_mean_dice,0.75
+median_dice_above_0.70,2581.0,rolling_median_dice,0.7
+failure_rate_below_0.25,405.0,rolling_failure_rate,0.25
+failure_rate_below_0.20,554.0,rolling_failure_rate,0.2
+failure_rate_below_0.15,754.0,rolling_failure_rate,0.15

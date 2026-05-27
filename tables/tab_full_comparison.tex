@@ -1,0 +1,93 @@
+% Table: Main Results — All Models, All Groups
+% Columns grouped by metric; models listed under each metric for direct comparison.
+% Bold = best model per row per metric (DSC/IoU: higher; HD95/ASSD: lower).
+% Split into two 9-column panels (DSC+IoU / HD95+ASSD) within one float.
+
+\begin{table}[htbp]
+\centering
+\caption{Segmentation performance of all models across all evaluation groups.
+  Results are reported for four models — MedSAM (baseline), cnnNoROI, cnnROI, and FlowSDF —
+  over six group stratifications: overall, three anatomical classes (SA, LI, RI),
+  and two fragment-size bins (Small, Large).
+  Metrics are Dice Similarity Coefficient (DSC, $\uparrow$), Intersection over Union (IoU, $\uparrow$),
+  95th-percentile Hausdorff Distance (HD95, $\downarrow$), and
+  Average Symmetric Surface Distance (ASSD, $\downarrow$), both surface distances in pixels.
+  \textbf{Bold} denotes the best-performing model within each group--metric combination.}
+\label{tab:full_comparison}
+
+% ---- Panel (a): DSC and IoU ----
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{l rrrr rrrr}
+\toprule
+& \multicolumn{4}{c}{DSC$\uparrow$}
+& \multicolumn{4}{c}{IoU$\uparrow$} \\
+\cmidrule(lr){2-5} \cmidrule(lr){6-9}
+Group & MedSAM & cnnNoROI & cnnROI & FlowSDF
+      & MedSAM & cnnNoROI & cnnROI & FlowSDF \\
+\midrule
+\multicolumn{9}{l}{\textit{Overall}} \\
+Overall
+  & 0.7180 & 0.7911 & \textbf{0.7935} & 0.7873
+  & 0.5741 & 0.6688 & \textbf{0.6702} & 0.6651 \\
+\midrule
+\multicolumn{9}{l}{\textit{By anatomical class}} \\
+SA
+  & 0.7194 & 0.7695 & \textbf{0.7696} & 0.7544
+  & 0.5753 & \textbf{0.6378} & 0.6368 & 0.6198 \\
+LI
+  & 0.7153 & 0.7984 & 0.8006 & \textbf{0.8013}
+  & 0.5708 & 0.6786 & 0.6794 & \textbf{0.6836} \\
+RI
+  & 0.7196 & 0.7996 & \textbf{0.8039} & 0.7974
+  & 0.5764 & 0.6816 & \textbf{0.6855} & 0.6798 \\
+\midrule
+\multicolumn{9}{l}{\textit{By fragment size}} \\
+Small
+  & 0.6965 & 0.7760 & \textbf{0.7781} & 0.7567
+  & 0.5495 & \textbf{0.6514} & 0.6510 & 0.6253 \\
+Large
+  & 0.7394 & 0.8062 & 0.8088 & \textbf{0.8180}
+  & 0.5986 & 0.6861 & 0.6894 & \textbf{0.7050} \\
+\bottomrule
+\end{tabular}%
+}
+
+\bigskip
+
+% ---- Panel (b): HD95 and ASSD ----
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{l rrrr rrrr}
+\toprule
+& \multicolumn{4}{c}{HD95\,(px)$\downarrow$}
+& \multicolumn{4}{c}{ASSD\,(px)$\downarrow$} \\
+\cmidrule(lr){2-5} \cmidrule(lr){6-9}
+Group & MedSAM & cnnNoROI & cnnROI & FlowSDF
+      & MedSAM & cnnNoROI & cnnROI & FlowSDF \\
+\midrule
+\multicolumn{9}{l}{\textit{Overall}} \\
+Overall
+  & 39.74 & 36.39 & 36.53 & \textbf{31.41}
+  & 13.07 & 10.31 & 10.28 & \textbf{9.46} \\
+\midrule
+\multicolumn{9}{l}{\textit{By anatomical class}} \\
+SA
+  & 43.45 & 39.99 & 39.88 & \textbf{36.86}
+  & 14.67 & 12.45 & 12.36 & \textbf{12.32} \\
+LI
+  & 39.27 & 35.24 & 35.58 & \textbf{28.56}
+  & 12.69 & 9.47  & 9.51  & \textbf{8.16}  \\
+RI
+  & 37.45 & 34.91 & 35.01 & \textbf{30.28}
+  & 12.28 & 9.57  & 9.53  & \textbf{8.68}  \\
+\midrule
+\multicolumn{9}{l}{\textit{By fragment size}} \\
+Small
+  & 22.39 & 21.46 & 20.39 & \textbf{20.15}
+  & 8.03  & 6.77  & \textbf{6.46} & 6.64  \\
+Large
+  & 57.07 & 51.27 & 52.67 & \textbf{42.62}
+  & 18.12 & 13.83 & 14.11 & \textbf{12.27} \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}

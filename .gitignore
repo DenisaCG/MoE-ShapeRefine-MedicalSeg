@@ -28,8 +28,11 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
-*.swodata_distribution/data_analysis_gt/
-data_distribution/data_analysis_medsam/
+*.swp
+
+# Dataset analysis — regenerable per-fragment feature tables (150 MB each)
+data_distribution_results/**/features.csv
+
 data/medsam-predictions/evaluation_pengwin*.csv
 
 checkpoints/
