@@ -1,6 +1,6 @@
 # FlowSDF MoE Training Setup — Summary
 
-Describe complete training pipeline for FlowSDF experts on MoE-gated X-ray fragment data.
+This file describes the complete training pipeline for FlowSDF experts on MoE-gated X-ray fragment data.
 
 
 ### Training Scripts (in `src/FlowSDF/`)
@@ -25,20 +25,14 @@ Describe complete training pipeline for FlowSDF experts on MoE-gated X-ray fragm
 - Converts sampled SDFs to binary masks and upsamples to 1024×1024
 - Saves `.npz` files with key `masks`, matching the MedSAM/CNN MoE evaluator convention
 
-**`train_flowsdf_moe.job`** — Snellius job script
-- Partition: `gpu_a100` (full A100 GPU)
-- Time: 8 hours
-- Default settings: 100 epochs, batch_size=8, num_workers=8, img_size=128×128
-- Output: `slurm_train_flowsdf_*.out` logs
 
-**`TRAINING.md`** — Complete usage documentation
+**`TRAINING.md`** — Offers additional documentation on the training.
 - Prerequisites (gating mechanism setup)
-- Local training vs. Snellius submission
 - All command-line arguments
 - Output checkpoint format
-- Next steps for inference/evaluation
+- Next steps for inference/evaluation.
 
-### Environment Setup (in `snellius-scripts/job/`)
+### Environment Setup
 
 **`create_flowSDF_MoE_env.job`** — New environment creation script
 - Creates `flowSDF` conda environment (Python 3.11)
@@ -231,12 +225,11 @@ Flow matching loss on predicted velocity vs target velocity
 
 ---
 
-## Next Steps
+## Roadmap
 
-1. **Run training**: `sbatch train_flowsdf_moe.job` (8 hrs on A100)
+1. **Run training**: `sbatch train_flowsdf_moe.job`
 2. **Run inference**: `python infer_flowsdf_moe.py --split val --checkpoint-dir ../../checkpoints/flowsdf`
 3. **Evaluate**: Compare refined masks against ground truth
 4. **Integrate**: Use outputs in the full MoE evaluation pipeline
 5. **Tune**: Adjust `--img-size`, `--epochs`, `--large-subsample`, `--ode-steps`, and `--sdf-binary-threshold`
 
-See `TRAINING.md` for complete documentation.

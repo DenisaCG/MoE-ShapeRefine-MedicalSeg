@@ -1,6 +1,6 @@
 # FlowSDF MoE Training
 
-Train FlowSDF experts separately on MoE-gated fragment data (expert_small and expert_large).
+Offers documentation on the training of the FlowSDF experts separately on MoE-gated fragment data (expert_small and expert_large).
 
 ## Overview
 
@@ -138,7 +138,7 @@ Required data must be in place:
 
 ## Training
 
-### Option: Run locally (for development)
+### Option: Run locally
 
 ```bash
 cd /gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/src/FlowSDF
@@ -206,17 +206,11 @@ Each checkpoint contains:
 
 ---
 
-## Next Steps
-
 After training, use the checkpoints to:
 
 1. **Refine MedSAM predictions** during inference
 2. **Evaluate** against ground truth masks
 3. **Combine** expert outputs in the full MoE pipeline
-
-See the main project README for downstream inference and evaluation workflows.
-
----
 
 ## Notes
 
