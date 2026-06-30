@@ -84,6 +84,7 @@ def wandb_init(args: argparse.Namespace, expert_id: str, resume_run_id: str | No
                 "clip_grad": args.clip_grad,
                 "img_cond_channels": args.img_cond_channels,
                 "large_subsample": args.large_subsample,
+                "early_stopping_patience": args.early_stopping_patience,
             },
         )
         return True
@@ -372,6 +373,7 @@ def train_expert(
     val_losses: list[float] = []
     start_epoch = 1
     wandb_run_id = None
+    patience_counter = 0
 
     # Resume from latest checkpoint if requested
     latest_ckpt = args.checkpoint_dir / f"{expert_id}_latest.pth"
@@ -386,7 +388,8 @@ def train_expert(
         val_losses = ckpt.get("val_losses", [])
         start_epoch = ckpt["epoch"] + 1
         wandb_run_id = ckpt.get("wandb_run_id")
-        print(f"  Resumed at epoch {start_epoch}/{args.epochs}, best_val_loss={best_val_loss:.4f}")
+        patience_counter = ckpt.get("patience_counter", 0)
+        print(f"  Resumed at epoch {start_epoch}/{args.epochs}, best_val_loss={best_val_loss:.4f}, patience={patience_counter}/{args.early_stopping_patience}")
     elif args.resume:
         print(f"  --resume set but no checkpoint found at {latest_ckpt}, starting fresh.")
 
@@ -396,6 +399,11 @@ def train_expert(
 
     # Initialize W&B
     wb_active = wandb_init(args, expert_id, resume_run_id=wandb_run_id)
+
+    stopped_early = False
+    early_stopping_on = args.early_stopping_patience > 0
+    # epoch is always defined after the loop because start_epoch <= args.epochs is guaranteed above
+    epoch = start_epoch - 1
 
     # Training loop
     for epoch in range(start_epoch, args.epochs + 1):
@@ -416,21 +424,30 @@ def train_expert(
         train_losses.append(train_loss)
         val_losses.append(val_loss)
 
-        print(f"{tag}  train={train_loss:.4f}  val={val_loss:.4f}")
+        # Track improvement for both best-checkpoint saving and early stopping
+        improved = val_loss < best_val_loss
+        if early_stopping_on:
+            if improved:
+                patience_counter = 0
+            else:
+                patience_counter += 1
+
+        patience_str = f"  patience={patience_counter}/{args.early_stopping_patience}" if early_stopping_on else ""
+        print(f"{tag}  train={train_loss:.4f}  val={val_loss:.4f}{patience_str}")
 
         # Log to W&B
-        wandb_log(
-            {
-                f"{expert_id}/train_loss": train_loss,
-                f"{expert_id}/val_loss": val_loss,
-            },
-            step=epoch,
-            active=wb_active,
-        )
+        wb_metrics = {
+            f"{expert_id}/train_loss": train_loss,
+            f"{expert_id}/val_loss": val_loss,
+        }
+        if early_stopping_on:
+            wb_metrics[f"{expert_id}/early_stopping_patience_counter"] = patience_counter
+        wandb_log(wb_metrics, step=epoch, active=wb_active)
 
-        if val_loss < best_val_loss:
+        # Save best checkpoint whenever val_loss strictly improves
+        if improved:
             best_val_loss = val_loss
-            ckpt = args.checkpoint_dir / f"{expert_id}_best.pth"
+            best_ckpt_path = args.checkpoint_dir / f"{expert_id}_best.pth"
             save_checkpoint_safely(
                 {
                     "epoch": epoch,
@@ -440,7 +457,7 @@ def train_expert(
                     "img_cond_channels": args.img_cond_channels,
                     "sdf_threshold": args.sdf_threshold,
                 },
-                ckpt,
+                best_ckpt_path,
                 expert_id=f"{expert_id}_best",
             )
 
@@ -461,6 +478,7 @@ def train_expert(
                 "best_val_loss": best_val_loss,
                 "train_losses": train_losses,
                 "val_losses": val_losses,
+                "patience_counter": patience_counter,
                 "img_cond_channels": args.img_cond_channels,
                 "sdf_threshold": args.sdf_threshold,
                 "wandb_run_id": _wb_run_id,
@@ -469,20 +487,32 @@ def train_expert(
             expert_id=f"{expert_id}_latest",
         )
 
-    # Save final checkpoint
+        if early_stopping_on and patience_counter >= args.early_stopping_patience:
+            print(
+                f"[{expert_id}] Early stopping at epoch {epoch}: "
+                f"val_loss did not improve for {args.early_stopping_patience} consecutive epochs "
+                f"(best val_loss={best_val_loss:.4f})"
+            )
+            wandb_log({f"{expert_id}/early_stopped_epoch": epoch}, step=epoch, active=wb_active)
+            stopped_early = True
+            break
+
+    # Save final checkpoint at the actual last epoch reached (correct on resume + early stop)
     final = args.checkpoint_dir / f"{expert_id}_final.pth"
     save_checkpoint_safely(
         {
-            "epoch": args.epochs,
+            "epoch": epoch,
             "model_state": model.state_dict(),
             "ema_state": ema_model.state_dict(),
             "img_cond_channels": args.img_cond_channels,
             "sdf_threshold": args.sdf_threshold,
+            "stopped_early": stopped_early,
         },
         final,
         expert_id=f"{expert_id}_final",
     )
-    print(f"[{expert_id}] done. Final: {final}")
+    stop_reason = f"early stopping at epoch {epoch}" if stopped_early else f"completed {args.epochs} epochs"
+    print(f"[{expert_id}] done ({stop_reason}). Final: {final}")
 
     # Save loss curve
     try:
@@ -573,6 +603,15 @@ def parse_args() -> argparse.Namespace:
         "--resume",
         action="store_true",
         help="Resume from {expert_id}_latest.pth in checkpoint-dir if it exists.",
+    )
+    parser.add_argument(
+        "--early-stopping-patience",
+        type=int,
+        default=10,
+        help=(
+            "Stop training if val_loss does not improve for this many consecutive epochs. "
+            "Set to 0 to disable."
+        ),
     )
     return parser.parse_args()
 

@@ -93,6 +93,16 @@ def parse_args() -> argparse.Namespace:
         help="Optional limit for a smaller smoke test.",
     )
     parser.add_argument(
+        "--finetuned-ckpt",
+        type=Path,
+        default=None,
+        help=(
+            "Optional fine-tuned MedSAM checkpoint (.pth) saved by train_medsam_pengwin.py. "
+            "If provided, the base SAM weights are overwritten with the fine-tuned weights. "
+            "Checkpoint format: {'model': state_dict, 'epoch': int, ...}"
+        ),
+    )
+    parser.add_argument(
         "--resume",
         action="store_true",
         help="Skip samples already present in output metadata.jsonl and append to it.",
@@ -295,6 +305,14 @@ def main() -> int:
         return 0
 
     model = sam_model_registry[args.model_type](checkpoint=str(args.checkpoint))
+    if args.finetuned_ckpt is not None:
+        if not args.finetuned_ckpt.exists():
+            raise FileNotFoundError(f"fine-tuned checkpoint not found: {args.finetuned_ckpt}")
+        ckpt = torch.load(args.finetuned_ckpt, map_location="cpu")
+        state_dict = ckpt.get("model", ckpt)
+        state_dict = {k.removeprefix("module."): v for k, v in state_dict.items()}
+        model.load_state_dict(state_dict)
+        print(f"Loaded fine-tuned weights from epoch {ckpt.get('epoch', '?')}: {args.finetuned_ckpt}")
     model = model.to(args.device)
     model.eval()
 

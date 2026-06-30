@@ -1,0 +1,43 @@
+============================================================================================== 
+Warning! Mixing Conda and module environments may lead to corruption of the
+user environment. 
+We do not recommend users mixing those two environments unless absolutely
+necessary. Note that 
+SURF does not provide any support for Conda environment.
+For more information, please refer to our software policy page:
+https://servicedesk.surf.nl/wiki/display/WIKI/Software+policy+Snellius#SoftwarepolicySnellius-UseofAnacondaandMinicondaenvironmentsonSnellius 
+
+Remember that many packages have already been installed on the system and can
+be loaded using 
+the 'module load <package__name>' command. If you are uncertain if a package is
+already available 
+on the system, please use 'module avail' or 'module spider' to search for it.
+============================================================================================== 
+========================================
+job id  : 23935522
+host    : gcn118.local.snellius.surf.nl
+start   : Tue Jun 16 17:16:01 CEST 2026
+gpu     : NVIDIA H100, 95830 MiB
+========================================
+Loaded fine-tuned weights from epoch 10: /gpfs/home5/scur0509/projects/MedSAM/ioana-checkpoint/medsam_pengwin_best.pth
+Running MedSAM:   0%|          | 0/49971 [00:00<?, ?it/s]/home/scur0509/.conda/envs/MoE/lib/python3.10/site-packages/torch/nn/modules/conv.py:459: UserWarning: Applied workaround for CuDNN issue, install nvrtc.so (Triggered internally at /opt/conda/conda-bld/pytorch_1682343995026/work/aten/src/ATen/native/cudnn/Conv_v8.cpp:80.)
+  return F.conv2d(input, weight, bias, self.stride,
+Running MedSAM:   0%|          | 1/49971 [00:01<14:07:36,  1.02s/it]Running MedSAM:   0%|          | 2/49971 [00:01<7:29:03,  1.85it/s] 
+Traceback (most recent call last):
+  File "/gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/src/run_medsam_with_pengwin_boxes.py", line 382, in <module>
+    raise SystemExit(main())
+  File "/gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/src/run_medsam_with_pengwin_boxes.py", line 334, in main
+    image = prefetch.result()
+  File "/home/scur0509/.conda/envs/MoE/lib/python3.10/concurrent/futures/_base.py", line 451, in result
+    return self.__get_result()
+  File "/home/scur0509/.conda/envs/MoE/lib/python3.10/concurrent/futures/_base.py", line 403, in __get_result
+    raise self._exception
+  File "/home/scur0509/.conda/envs/MoE/lib/python3.10/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/src/run_medsam_with_pengwin_boxes.py", line 323, in _load_image
+    return load_and_preprocess_image(
+  File "/gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/src/run_medsam_with_pengwin_boxes.py", line 169, in load_and_preprocess_image
+    image = np.array(Image.open(path)).astype(np.float32)
+  File "/home/scur0509/.conda/envs/MoE/lib/python3.10/site-packages/PIL/Image.py", line 3469, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: '/gpfs/scratch1/shared/scur0509/data/pengwin/original/task2_xray/train/input/images/x-ray/001_0031.tif'

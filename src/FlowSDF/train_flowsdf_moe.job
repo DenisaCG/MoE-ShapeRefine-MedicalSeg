@@ -78,17 +78,17 @@ echo ""
 
 # ========== FULL TRAINING ==========
 echo "========================================"
-echo "FULL TRAINING: 20 epochs, both experts"
+echo "FULL TRAINING: 40 epochs, both experts"
 echo "========================================"
 python train_flowsdf_moe.py \
     --expert both \
-    --epochs 20 \
+    --epochs 40 \
     --batch-size 8 \
     --num-workers 8 \
     --img-size 128 \
     --large-subsample 17000 \
     --wandb-project moe-shaprefine \
-    --resume
+    --early-stopping-patience 10
 
 TRAIN_EXIT=$?
 

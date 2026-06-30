@@ -1,0 +1,37 @@
+============================================================================================== 
+Warning! Mixing Conda and module environments may lead to corruption of the
+user environment. 
+We do not recommend users mixing those two environments unless absolutely
+necessary. Note that 
+SURF does not provide any support for Conda environment.
+For more information, please refer to our software policy page:
+https://servicedesk.surf.nl/wiki/display/WIKI/Software+policy+Snellius#SoftwarepolicySnellius-UseofAnacondaandMinicondaenvironmentsonSnellius 
+
+Remember that many packages have already been installed on the system and can
+be loaded using 
+the 'module load <package__name>' command. If you are uncertain if a package is
+already available 
+on the system, please use 'module avail' or 'module spider' to search for it.
+============================================================================================== 
+========================================
+job id  : 23935499
+host    : gcn118.local.snellius.surf.nl
+start   : Tue Jun 16 17:13:59 CEST 2026
+gpu     : NVIDIA H100, 95830 MiB
+========================================
+Traceback (most recent call last):
+  File "/gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/src/run_medsam_with_pengwin_boxes.py", line 387, in <module>
+    raise SystemExit(main())
+  File "/gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/src/run_medsam_with_pengwin_boxes.py", line 313, in main
+    model = sam_model_registry[args.model_type](checkpoint=None)
+  File "/gpfs/home5/scur0509/projects/MedSAM/segment_anything/build_sam.py", line 45, in build_sam_vit_b
+    return _build_sam(
+  File "/gpfs/home5/scur0509/projects/MedSAM/segment_anything/build_sam.py", line 110, in _build_sam
+    checkpoint = Path(checkpoint)
+  File "/home/scur0509/.conda/envs/MoE/lib/python3.10/pathlib.py", line 960, in __new__
+    self = cls._from_parts(args)
+  File "/home/scur0509/.conda/envs/MoE/lib/python3.10/pathlib.py", line 594, in _from_parts
+    drv, root, parts = self._parse_args(args)
+  File "/home/scur0509/.conda/envs/MoE/lib/python3.10/pathlib.py", line 578, in _parse_args
+    a = os.fspath(a)
+TypeError: expected str, bytes or os.PathLike object, not NoneType

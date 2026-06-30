@@ -5,8 +5,8 @@
 #SBATCH --job-name=infer_flowsdf_FlowSDF
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=4
-#SBATCH --time=12:00:00
-#SBATCH --output=/gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/src/FlowSDF/jobs-slurmOutputs/slurm_infer_flowsdf_%A.out
+#SBATCH --time=15:00:00
+#SBATCH --output=/gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/src/FlowSDF/jobs-slurmOutputs/new_slurm_infer_flowsdf_%A.out
 
 # Runs infer_flowsdf_moe.py on the test split.
 # Requires train_flowsdf_moe.job to have completed (needs expert_*_best.pth checkpoints).
@@ -42,7 +42,7 @@ python src/FlowSDF/infer_flowsdf_moe.py \
     --state-key ema_state \
     --output-root data/flowsdf-moe-predictions \
     --img-size 128 \
-    --ode-steps 4 \
+    --ode-steps 40 \
     --n-eval 1 \
     # --skip-existing
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --partition=gpu_mig
+#SBATCH --partition=gpu_h100
 #SBATCH --gpus=1
 #SBATCH --job-name=infer_medsam_finetuned
 #SBATCH --ntasks=1
@@ -34,7 +34,7 @@ echo "========================================"
 
 python src/run_medsam_with_pengwin_boxes.py \
     --output-root     data/medsam-finetuned-predictions \
-    --checkpoint  /gpfs/home5/scur0509/projects/MedSAM/ioana-checkpoint/medsam_pengwin_best.pth \
+    --finetuned-ckpt  /gpfs/home5/scur0509/projects/MedSAM/ioana-checkpoint/medsam_pengwin_best.pth \
     --resume
 
 echo "========================================"

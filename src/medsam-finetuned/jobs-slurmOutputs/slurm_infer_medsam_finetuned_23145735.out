@@ -1,0 +1,32 @@
+============================================================================================== 
+Warning! Mixing Conda and module environments may lead to corruption of the
+user environment. 
+We do not recommend users mixing those two environments unless absolutely
+necessary. Note that 
+SURF does not provide any support for Conda environment.
+For more information, please refer to our software policy page:
+https://servicedesk.surf.nl/wiki/display/WIKI/Software+policy+Snellius#SoftwarepolicySnellius-UseofAnacondaandMinicondaenvironmentsonSnellius 
+
+Remember that many packages have already been installed on the system and can
+be loaded using 
+the 'module load <package__name>' command. If you are uncertain if a package is
+already available 
+on the system, please use 'module avail' or 'module spider' to search for it.
+============================================================================================== 
+========================================
+job id  : 23145735
+host    : gcn85.local.snellius.surf.nl
+start   : Thu May 28 01:16:56 CEST 2026
+gpu     : NVIDIA H100, 95830 MiB
+========================================
+usage: run_medsam_with_pengwin_boxes.py [-h] [--input-root INPUT_ROOT]
+                                        [--output-root OUTPUT_ROOT]
+                                        [--checkpoint CHECKPOINT]
+                                        [--model-type {default,vit_h,vit_l,vit_b}]
+                                        [--device DEVICE]
+                                        [--threshold THRESHOLD]
+                                        [--case-id CASE_ID]
+                                        [--sample-name SAMPLE_NAME]
+                                        [--limit LIMIT] [--resume]
+                                        [--overwrite]
+run_medsam_with_pengwin_boxes.py: error: unrecognized arguments: --finetuned-ckpt /gpfs/home5/scur0509/projects/MedSAM/ioana-checkpoint/medsam_pengwin_best.pth

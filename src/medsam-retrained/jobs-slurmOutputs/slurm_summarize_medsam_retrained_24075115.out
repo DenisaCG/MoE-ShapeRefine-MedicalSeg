@@ -1,0 +1,109 @@
+============================================================================================== 
+Warning! Mixing Conda and module environments may lead to corruption of the
+user environment. 
+We do not recommend users mixing those two environments unless absolutely
+necessary. Note that 
+SURF does not provide any support for Conda environment.
+For more information, please refer to our software policy page:
+https://servicedesk.surf.nl/wiki/display/WIKI/Software+policy+Snellius#SoftwarepolicySnellius-UseofAnacondaandMinicondaenvironmentsonSnellius 
+
+Remember that many packages have already been installed on the system and can
+be loaded using 
+the 'module load <package__name>' command. If you are uncertain if a package is
+already available 
+on the system, please use 'module avail' or 'module spider' to search for it.
+============================================================================================== 
+========================================
+job id  : 24075115
+host    : tcn148.local.snellius.surf.nl
+start   : Sun Jun 21 22:27:11 CEST 2026
+========================================
+=== Filtering to test split ===
+Test fragments: 26457 / 264927 total
+
+=== Full metrics — test split (Dice, IoU, HD95, ASSD) ===
+Evaluation summary
+==========================================================================================
+CSV: data/medsam-retrained-predictions/evaluation_pengwin_test.csv
+Image records evaluated: 5000
+Fragment rows written: 26457
+Failed records: not stored in CSV
+Empty predictions: 0
+Empty GT masks: 0
+Area threshold on 1024 grid: 146463.34837372415
+
+Overall mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+overall                        26457         0.9426         0.8997         7.5305         1.9867
+
+Per-class mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+SA                              7083         0.9179         0.8599        11.6289         3.2374
+LI                              9808         0.9503         0.9120         6.0495         1.5501
+RI                              9566         0.9529         0.9167         6.0143         1.5083
+
+Per-size mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+small                          13245         0.9136         0.8535         7.2970         2.0754
+large                          13212         0.9716         0.9461         7.7646         1.8978
+
+Per-class and per-size mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+SA/small                        3130         0.8688         0.7857        10.7103         3.2604
+SA/large                        3953         0.9568         0.9186        12.3562         3.2192
+LI/small                        5194         0.9267         0.8728         6.0803         1.6912
+LI/large                        4614         0.9769         0.9561         6.0149         1.3913
+RI/small                        4921         0.9284         0.8762         6.4101         1.7271
+RI/large                        4645         0.9790         0.9596         5.5951         1.2764
+==========================================================================================
+
+Saved summary CSV: data/medsam-retrained-predictions/summary_full.csv
+
+=== Overlap metrics — test split (Dice, IoU) ===
+Evaluation summary
+==========================================================================================
+CSV: data/medsam-retrained-predictions/evaluation_pengwin_test.csv
+Image records evaluated: 5000
+Fragment rows written: 26457
+Failed records: not stored in CSV
+Empty predictions: 0
+Empty GT masks: 0
+Area threshold on 1024 grid: 146463.34837372415
+
+Overall mean metrics:
+group                              n      dice_mean       iou_mean
+------------------------------------------------------------------
+overall                        26457         0.9426         0.8997
+
+Per-class mean metrics:
+group                              n      dice_mean       iou_mean
+------------------------------------------------------------------
+SA                              7083         0.9179         0.8599
+LI                              9808         0.9503         0.9120
+RI                              9566         0.9529         0.9167
+
+Per-size mean metrics:
+group                              n      dice_mean       iou_mean
+------------------------------------------------------------------
+small                          13245         0.9136         0.8535
+large                          13212         0.9716         0.9461
+
+Per-class and per-size mean metrics:
+group                              n      dice_mean       iou_mean
+------------------------------------------------------------------
+SA/small                        3130         0.8688         0.7857
+SA/large                        3953         0.9568         0.9186
+LI/small                        5194         0.9267         0.8728
+LI/large                        4614         0.9769         0.9561
+RI/small                        4921         0.9284         0.8762
+RI/large                        4645         0.9790         0.9596
+==========================================================================================
+
+Saved summary CSV: data/medsam-retrained-predictions/summary_overlap.csv
+========================================
+end : Sun Jun 21 22:27:16 CEST 2026
+========================================

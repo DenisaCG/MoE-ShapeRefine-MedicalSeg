@@ -1,0 +1,101 @@
+============================================================================================== 
+Warning! Mixing Conda and module environments may lead to corruption of the
+user environment. 
+We do not recommend users mixing those two environments unless absolutely
+necessary. Note that 
+SURF does not provide any support for Conda environment.
+For more information, please refer to our software policy page:
+https://servicedesk.surf.nl/wiki/display/WIKI/Software+policy+Snellius#SoftwarepolicySnellius-UseofAnacondaandMinicondaenvironmentsonSnellius 
+
+Remember that many packages have already been installed on the system and can
+be loaded using 
+the 'module load <package__name>' command. If you are uncertain if a package is
+already available 
+on the system, please use 'module avail' or 'module spider' to search for it.
+============================================================================================== 
+========================================
+job id  : 24265667
+host    : gcn139.local.snellius.surf.nl
+start   : Sun Jun 28 10:05:00 CEST 2026
+gpu     : NVIDIA H100, 95830 MiB
+python  : /home/scur0509/.conda/envs/flowSDF/bin/python
+========================================
+
+Checking disk space and cleaning cache...
+GPFS free space: 53533 GB
+Using TMPDIR for checkpoint writes: /tmp/flowsdf_checkpoints_24265667
+
+========================================
+FULL TRAINING: 20 epochs, both experts
+========================================
+wandb: [wandb.login()] Loaded credentials for https://api.wandb.ai from /home/scur0509/.netrc.
+wandb: Currently logged in as: giacomo-grazia (fomo-group-12) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.26.1
+wandb: Run data is saved locally in /gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/src/FlowSDF/wandb/run-20260628_100521-vff2i40w
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run expert_small__flowsdf_expert
+wandb: ⭐️ View project at https://wandb.ai/fomo-group-12/moe-shaprefine
+wandb: 🚀 View run at https://wandb.ai/fomo-group-12/moe-shaprefine/runs/vff2i40w
+device: cuda
+Building dataloaders …
+[train] expert_small: 17335 fragments
+[train] expert_large: 17000 fragments
+[val] expert_small: 2258 fragments
+[val] expert_large: 24286 fragments
+
+============================================================
+Training expert_small
+============================================================
+  Network has 160754049 parameters
+  Resuming expert_small from /gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/checkpoints/flowsdf/expert_small_latest.pth
+  Resumed at epoch 21/40, best_val_loss=0.0024, patience=0/10
+
+[expert_small] 21/40 train:   0%|          | 0/2167 [00:00<?, ?it/s]
+                                                                    
+Traceback (most recent call last):
+  File "/gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/src/FlowSDF/train_flowsdf_moe.py", line 711, in <module>
+    main()
+  File "/gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/src/FlowSDF/train_flowsdf_moe.py", line 700, in main
+    train_expert(
+  File "/gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/src/FlowSDF/train_flowsdf_moe.py", line 412, in train_expert
+    train_loss = run_one_epoch(
+                 ^^^^^^^^^^^^^^
+  File "/gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/src/FlowSDF/train_flowsdf_moe.py", line 288, in run_one_epoch
+    for batch in tqdm(loader, desc=desc, leave=False):
+  File "/home/scur0509/.conda/envs/flowSDF/lib/python3.11/site-packages/tqdm/std.py", line 1181, in __iter__
+    for obj in iterable:
+  File "/home/scur0509/.conda/envs/flowSDF/lib/python3.11/site-packages/torch/utils/data/dataloader.py", line 718, in __next__
+    data = self._next_data()
+           ^^^^^^^^^^^^^^^^^
+  File "/home/scur0509/.conda/envs/flowSDF/lib/python3.11/site-packages/torch/utils/data/dataloader.py", line 1525, in _next_data
+    return self._process_data(data, worker_id)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/scur0509/.conda/envs/flowSDF/lib/python3.11/site-packages/torch/utils/data/dataloader.py", line 1563, in _process_data
+    data.reraise()
+  File "/home/scur0509/.conda/envs/flowSDF/lib/python3.11/site-packages/torch/_utils.py", line 774, in reraise
+    raise exception
+FileNotFoundError: Caught FileNotFoundError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/home/scur0509/.conda/envs/flowSDF/lib/python3.11/site-packages/torch/utils/data/_utils/worker.py", line 374, in _worker_loop
+    data = fetcher.fetch(index)  # type: ignore[possibly-undefined]
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/scur0509/.conda/envs/flowSDF/lib/python3.11/site-packages/torch/utils/data/_utils/fetch.py", line 54, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/scur0509/.conda/envs/flowSDF/lib/python3.11/site-packages/torch/utils/data/_utils/fetch.py", line 54, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+            ~~~~~~~~~~~~^^^^^
+  File "/gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/src/FlowSDF/train_flowsdf_moe.py", line 143, in __getitem__
+    batch_item = self.fragment_dataset[idx]
+                 ~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/src/gating_mechanism/dataset.py", line 25, in __getitem__
+    embedding   = np.load(resolve_existing_path(rec["embedding_path"]))        # (256, 64, 64)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/scur0509/.conda/envs/flowSDF/lib/python3.11/site-packages/numpy/lib/_npyio_impl.py", line 454, in load
+    fid = stack.enter_context(open(os.fspath(file), "rb"))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/data/medsam-predictions/embeddings/XRAY_PENGWIN_054_0139.npy'
+
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mexpert_small__flowsdf_expert[0m at: [34mhttps://wandb.ai/fomo-group-12/moe-shaprefine/runs/vff2i40w[0m
+[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20260628_100521-vff2i40w/logs[0m
