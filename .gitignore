@@ -37,3 +37,8 @@ data/medsam-predictions/evaluation_pengwin*.csv
 
 checkpoints/
 wandb/
+src/gating_mechanism/gating_ablation/strategy1/predictions/binary_masks/
+src/gating_mechanism/gating_ablation/strategy4_learned_cnnroi/predictions/binary_masks/
+src/gating_mechanism/gating_ablation/strategy3_seed7/predictions/binary_masks/
+src/gating_mechanism/gating_ablation/strategy3_seed42/predictions/binary_masks/
+src/gating_mechanism/gating_ablation/strategy3_seed123/predictions/binary_masks/
