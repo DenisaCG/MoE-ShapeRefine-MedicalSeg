@@ -5,16 +5,22 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --time=00:10:00
-#SBATCH --output=/gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/src/FlowSDF/jobs-slurmOutputs/slurm_annotate_existing_comparison_%A.out
+#SBATCH --output=/gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/src/FlowSDF/jobs-slurmOutputs/slurm_annotate_existing_comparison_%A.out
 
 # Adds lower-right Dice / delta-vs-MedSAM overlays to an already-rendered
 # comparison PNG. This does not require binary masks; it reads scores from the
 # evaluation CSVs and writes an annotated copy.
 #
+# ODE_STEPS and the --image filename below must match an existing PNG produced
+# by 6_compare_flowsdf_cnn.job for that step count — update both per run.
+#
 # Output:
-#   data/flowsdf-moe-predictions/test/comparisons/stepsize_4/annotated/
+#   data/flowsdf-moe-predictions/test/stepsize_${ODE_STEPS}/comparisons/annotated/
 
 set -euo pipefail
+
+ODE_STEPS=40
+COMPARISONS_DIR="data/flowsdf-moe-predictions/test/stepsize_${ODE_STEPS}/comparisons"
 
 module purge
 module load 2024
@@ -23,18 +29,19 @@ module load Anaconda3/2024.06-1
 source /sw/arch/RHEL9/EB_production/2024/software/Anaconda3/2024.06-1/etc/profile.d/conda.sh
 conda activate MoE
 
-cd /gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg
+cd /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg
 
 echo "========================================"
 echo "job id : ${SLURM_JOB_ID}"
 echo "host   : $(hostname)"
 echo "start  : $(date)"
 echo "python : $(which python)"
+echo "ode-steps: ${ODE_STEPS}"
 echo "========================================"
 
 python evaluation/annotate_existing_comparison_png.py \
-    --image data/flowsdf-moe-predictions/test/comparisons/stepsize_4/random_large__XRAY_PENGWIN_011_0118__frag000__SA__large__delta-0.053.png \
-    --output-dir data/flowsdf-moe-predictions/test/comparisons/stepsize_4/annotated \
+    --image "${COMPARISONS_DIR}/random_large__XRAY_PENGWIN_011_0118__frag000__SA__large__delta-0.053.png" \
+    --output-dir "${COMPARISONS_DIR}/annotated" \
     --panel-order "X-ray,MedSAM,cnnNoROI,cnnROI,FlowSDF,Ground truth,Diff"
 
 echo "========================================"

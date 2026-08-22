@@ -1,0 +1,103 @@
+============================================================================================== 
+Warning! Mixing Conda and module environments may lead to corruption of the
+user environment. 
+We do not recommend users mixing those two environments unless absolutely
+necessary. Note that 
+SURF does not provide any support for Conda environment.
+For more information, please refer to our software policy page:
+https://servicedesk.surf.nl/wiki/display/WIKI/Software+policy+Snellius#SoftwarepolicySnellius-UseofAnacondaandMinicondaenvironmentsonSnellius 
+
+Remember that many packages have already been installed on the system and can
+be loaded using 
+the 'module load <package__name>' command. If you are uncertain if a package is
+already available 
+on the system, please use 'module avail' or 'module spider' to search for it.
+============================================================================================== 
+========================================
+job id : 24512062
+host   : tcn148.local.snellius.surf.nl
+start  : Wed Jul  8 17:08:40 CEST 2026
+ode-steps: 10
+========================================
+Loading evaluation CSVs …
+  26457 matched fragments
+
+=== cnnROI vs cnnNoROI vs FlowSDF — per-group comparison ===
+group                 n  dice_noroi  dice_roi     ΔR-N  iou_noroi  iou_roi     ΔR-N  dice_flow     ΔF-N     ΔF-R  iou_flow     ΔF-N     ΔF-R
+--------------------------------------------------------------------------------------------------------------------------------------------
+overall           26457      0.7985    0.7979  -0.0006     0.6789   0.6763  -0.0026     0.6850  -0.1135  -0.1129    0.5426  -0.1363  -0.1337
+small             13228      0.7821    0.7813  -0.0008     0.6595   0.6552  -0.0043     0.6434  -0.1387  -0.1379    0.5008  -0.1587  -0.1544
+large             13229      0.8148    0.8145  -0.0003     0.6982   0.6974  -0.0009     0.7267  -0.0882  -0.0879    0.5843  -0.1139  -0.1130
+SA                 7083      0.7743    0.7712  -0.0031     0.6441   0.6390  -0.0051     0.6961  -0.0782  -0.0751    0.5536  -0.0905  -0.0854
+LI                 9808      0.8059    0.8062  +0.0002     0.6889   0.6873  -0.0016     0.6791  -0.1269  -0.1271    0.5359  -0.1530  -0.1514
+RI                 9566      0.8087    0.8092  +0.0005     0.6943   0.6926  -0.0017     0.6829  -0.1258  -0.1263    0.5413  -0.1531  -0.1513
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+Building X-ray image map …
+Selected 30 fragments — generating figures …
+
+[roi_wins] XRAY_PENGWIN_046_0415
+  saved: roi_wins__XRAY_PENGWIN_046_0415__frag003__RI__small__delta+0.921.png
+[roi_wins] XRAY_PENGWIN_050_0007
+  saved: roi_wins__XRAY_PENGWIN_050_0007__frag001__LI__small__delta+0.882.png
+[roi_wins] XRAY_PENGWIN_090_0231
+  saved: roi_wins__XRAY_PENGWIN_090_0231__frag003__RI__small__delta+0.881.png
+[roi_wins] XRAY_PENGWIN_005_0426
+  saved: roi_wins__XRAY_PENGWIN_005_0426__frag003__RI__small__delta+0.878.png
+[roi_wins] XRAY_PENGWIN_087_0267
+  saved: roi_wins__XRAY_PENGWIN_087_0267__frag005__LI__small__delta+0.876.png
+[roi_loses] XRAY_PENGWIN_016_0110
+  saved: roi_loses__XRAY_PENGWIN_016_0110__frag003__RI__small__delta-0.343.png
+[roi_loses] XRAY_PENGWIN_091_0027
+  saved: roi_loses__XRAY_PENGWIN_091_0027__frag003__LI__small__delta-0.327.png
+[roi_loses] XRAY_PENGWIN_085_0061
+  saved: roi_loses__XRAY_PENGWIN_085_0061__frag005__RI__small__delta-0.283.png
+[roi_loses] XRAY_PENGWIN_092_0073
+  saved: roi_loses__XRAY_PENGWIN_092_0073__frag000__SA__small__delta-0.240.png
+[roi_loses] XRAY_PENGWIN_042_0352
+  saved: roi_loses__XRAY_PENGWIN_042_0352__frag002__RI__small__delta-0.229.png
+[flowsdf_wins] XRAY_PENGWIN_095_0497
+  saved: flowsdf_wins__XRAY_PENGWIN_095_0497__frag004__RI__small__delta-0.019.png
+[flowsdf_wins] XRAY_PENGWIN_025_0172
+  saved: flowsdf_wins__XRAY_PENGWIN_025_0172__frag003__LI__small__delta+0.146.png
+[flowsdf_wins] XRAY_PENGWIN_090_0487
+  saved: flowsdf_wins__XRAY_PENGWIN_090_0487__frag000__SA__small__delta+0.075.png
+[flowsdf_wins] XRAY_PENGWIN_088_0287
+  saved: flowsdf_wins__XRAY_PENGWIN_088_0287__frag001__LI__small__delta+0.030.png
+[flowsdf_wins] XRAY_PENGWIN_033_0408
+  saved: flowsdf_wins__XRAY_PENGWIN_033_0408__frag001__SA__small__delta+0.040.png
+[flowsdf_loses] XRAY_PENGWIN_031_0149
+  saved: flowsdf_loses__XRAY_PENGWIN_031_0149__frag005__RI__small__delta+0.007.png
+[flowsdf_loses] XRAY_PENGWIN_099_0162
+  saved: flowsdf_loses__XRAY_PENGWIN_099_0162__frag003__LI__small__delta-0.037.png
+[flowsdf_loses] XRAY_PENGWIN_012_0253
+  saved: flowsdf_loses__XRAY_PENGWIN_012_0253__frag002__LI__small__delta+0.250.png
+[flowsdf_loses] XRAY_PENGWIN_047_0424
+  saved: flowsdf_loses__XRAY_PENGWIN_047_0424__frag002__LI__small__delta-0.037.png
+[flowsdf_loses] XRAY_PENGWIN_100_0488
+  saved: flowsdf_loses__XRAY_PENGWIN_100_0488__frag006__RI__small__delta+0.015.png
+[random_small] XRAY_PENGWIN_079_0277
+  saved: random_small__XRAY_PENGWIN_079_0277__frag003__RI__small__delta+0.044.png
+[random_small] XRAY_PENGWIN_045_0340
+  saved: random_small__XRAY_PENGWIN_045_0340__frag001__SA__small__delta+0.046.png
+[random_small] XRAY_PENGWIN_066_0424
+  saved: random_small__XRAY_PENGWIN_066_0424__frag004__LI__small__delta+0.230.png
+[random_small] XRAY_PENGWIN_009_0332
+  saved: random_small__XRAY_PENGWIN_009_0332__frag003__RI__small__delta-0.010.png
+[random_small] XRAY_PENGWIN_045_0140
+  saved: random_small__XRAY_PENGWIN_045_0140__frag001__SA__small__delta-0.002.png
+[random_large] XRAY_PENGWIN_098_0197
+  saved: random_large__XRAY_PENGWIN_098_0197__frag003__RI__large__delta+0.034.png
+[random_large] XRAY_PENGWIN_011_0118
+  saved: random_large__XRAY_PENGWIN_011_0118__frag004__RI__large__delta-0.017.png
+[random_large] XRAY_PENGWIN_054_0264
+  saved: random_large__XRAY_PENGWIN_054_0264__frag001__LI__large__delta+0.020.png
+[random_large] XRAY_PENGWIN_077_0309
+  saved: random_large__XRAY_PENGWIN_077_0309__frag001__LI__large__delta+0.071.png
+[random_large] XRAY_PENGWIN_074_0459
+  saved: random_large__XRAY_PENGWIN_074_0459__frag000__SA__large__delta-0.005.png
+
+Done. 30 figures saved to: data/flowsdf-moe-predictions/test/stepsize_10/comparisons
+========================================
+end : Wed Jul  8 17:09:13 CEST 2026
+========================================

@@ -1,0 +1,32 @@
+============================================================================================== 
+Warning! Mixing Conda and module environments may lead to corruption of the
+user environment. 
+We do not recommend users mixing those two environments unless absolutely
+necessary. Note that 
+SURF does not provide any support for Conda environment.
+For more information, please refer to our software policy page:
+https://servicedesk.surf.nl/wiki/display/WIKI/Software+policy+Snellius#SoftwarepolicySnellius-UseofAnacondaandMinicondaenvironmentsonSnellius 
+
+Remember that many packages have already been installed on the system and can
+be loaded using 
+the 'module load <package__name>' command. If you are uncertain if a package is
+already available 
+on the system, please use 'module avail' or 'module spider' to search for it.
+============================================================================================== 
+========================================
+job id  : 24424823
+host    : gcn99.local.snellius.surf.nl
+start   : Sat Jul  4 08:49:47 CEST 2026
+gpu     : NVIDIA H100, 95830 MiB
+========================================
+Running MedSAM:   0%|          | 0/1 [00:00<?, ?it/s]/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/torch/nn/modules/conv.py:459: UserWarning: Applied workaround for CuDNN issue, install nvrtc.so (Triggered internally at /opt/conda/conda-bld/pytorch_1682343995026/work/aten/src/ATen/native/cudnn/Conv_v8.cpp:80.)
+  return F.conv2d(input, weight, bias, self.stride,
+Running MedSAM: 100%|██████████| 1/1 [00:00<00:00,  1.10it/s]Running MedSAM: 100%|██████████| 1/1 [00:00<00:00,  1.10it/s]
+processed 1 samples
+skipped 49999 already-done samples (--resume)
+prediction root: data/medsam-predictions
+binary masks dir: data/medsam-predictions/binary_masks
+embeddings dir:   data/medsam-predictions/embeddings
+========================================
+end : Sat Jul  4 08:49:59 CEST 2026
+========================================

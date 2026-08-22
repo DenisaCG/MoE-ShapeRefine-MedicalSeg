@@ -8,7 +8,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TRAIN_JOB="/gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/medSAM-stage1/scripts/jobs-slurmOutputs/1_train_medsam_pengwin.job"
+TRAIN_JOB="/gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/medSAM-stage1/scripts/jobs-slurmOutputs/1_train_medsam_pengwin.job"
 
 JOB_INFER="${SCRIPT_DIR}/1_infer_medsam_retrained.job"
 JOB_EVAL="${SCRIPT_DIR}/2_evaluate_medsam_retrained.job"

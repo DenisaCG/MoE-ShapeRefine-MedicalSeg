@@ -1,0 +1,53 @@
+============================================================================================== 
+Warning! Mixing Conda and module environments may lead to corruption of the
+user environment. 
+We do not recommend users mixing those two environments unless absolutely
+necessary. Note that 
+SURF does not provide any support for Conda environment.
+For more information, please refer to our software policy page:
+https://servicedesk.surf.nl/wiki/display/WIKI/Software+policy+Snellius#SoftwarepolicySnellius-UseofAnacondaandMinicondaenvironmentsonSnellius 
+
+Remember that many packages have already been installed on the system and can
+be loaded using 
+the 'module load <package__name>' command. If you are uncertain if a package is
+already available 
+on the system, please use 'module avail' or 'module spider' to search for it.
+============================================================================================== 
+========================================
+job id : 24533811
+host   : tcn420.local.snellius.surf.nl
+start  : Fri Jul 10 20:29:16 CEST 2026
+ode-steps: 40
+========================================
+Loading evaluation CSVs …
+  26457 matched fragments
+
+=== cnnROI vs cnnNoROI vs FlowSDF — per-group comparison ===
+group                 n  dice_noroi  dice_roi     ΔR-N  iou_noroi  iou_roi     ΔR-N  dice_flow     ΔF-N     ΔF-R  iou_flow     ΔF-N     ΔF-R
+--------------------------------------------------------------------------------------------------------------------------------------------
+overall           26457      0.7985    0.7979  -0.0006     0.6789   0.6763  -0.0026     0.9083  +0.1099  +0.1104    0.8454  +0.1665  +0.1691
+small             13228      0.7821    0.7813  -0.0008     0.6595   0.6552  -0.0043     0.8809  +0.0987  +0.0995    0.8025  +0.1430  +0.1473
+large             13229      0.8148    0.8145  -0.0003     0.6982   0.6974  -0.0009     0.9358  +0.1210  +0.1213    0.8882  +0.1900  +0.1908
+SA                 7083      0.7743    0.7712  -0.0031     0.6441   0.6390  -0.0051     0.8808  +0.1065  +0.1095    0.8031  +0.1590  +0.1642
+LI                 9808      0.8059    0.8062  +0.0002     0.6889   0.6873  -0.0016     0.9175  +0.1116  +0.1113    0.8587  +0.1697  +0.1714
+RI                 9566      0.8087    0.8092  +0.0005     0.6943   0.6926  -0.0017     0.9193  +0.1106  +0.1101    0.8630  +0.1687  +0.1704
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+Building X-ray image map …
+Selected 5 fragments — generating figures …
+
+[selected] XRAY_PENGWIN_011_0118
+  saved: selected__XRAY_PENGWIN_011_0118__frag000__SA__large__delta-0.076.png
+[selected] XRAY_PENGWIN_054_0261
+  saved: selected__XRAY_PENGWIN_054_0261__frag003__RI__large__delta-0.040.png
+[selected] XRAY_PENGWIN_074_0456
+  saved: selected__XRAY_PENGWIN_074_0456__frag002__LI__large__delta-0.009.png
+[selected] XRAY_PENGWIN_077_0284
+  saved: selected__XRAY_PENGWIN_077_0284__frag004__RI__large__delta-0.023.png
+[selected] XRAY_PENGWIN_098_0188
+  saved: selected__XRAY_PENGWIN_098_0188__frag002__LI__large__delta-0.010.png
+
+Done. 5 figures saved to: data/flowsdf-moe-predictions/test/FINAL/comparisons
+========================================
+end : Fri Jul 10 20:30:54 CEST 2026
+========================================

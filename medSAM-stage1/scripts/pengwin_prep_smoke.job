@@ -12,8 +12,8 @@ module load 2024
 module load Anaconda3/2024.06-1
 
 source activate MoE
-cd /gpfs/home5/scur0509/projects || exit 1
+cd /gpfs/home5/aramautar2/projects || exit 1
 
 python3 MedSAM/scripts/prepare_pengwin_xray_for_medsam.py \
   --limit 5 \
-  --output-root /gpfs/home5/scur0509/projects/data/pengwin/derived/medsam/xray_smoketest
+  --output-root /gpfs/home5/aramautar2/projects/data/pengwin/derived/medsam/xray_smoketest

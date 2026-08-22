@@ -1,0 +1,36 @@
+============================================================================================== 
+Warning! Mixing Conda and module environments may lead to corruption of the
+user environment. 
+We do not recommend users mixing those two environments unless absolutely
+necessary. Note that 
+SURF does not provide any support for Conda environment.
+For more information, please refer to our software policy page:
+https://servicedesk.surf.nl/wiki/display/WIKI/Software+policy+Snellius#SoftwarepolicySnellius-UseofAnacondaandMinicondaenvironmentsonSnellius 
+
+Remember that many packages have already been installed on the system and can
+be loaded using 
+the 'module load <package__name>' command. If you are uncertain if a package is
+already available 
+on the system, please use 'module avail' or 'module spider' to search for it.
+============================================================================================== 
+========================================
+job id  : 24411646
+host    : gcn35.local.snellius.surf.nl
+start   : Sat Jul  4 01:22:27 CEST 2026
+gpu     : NVIDIA A100-SXM4-40GB, 40960 MiB
+========================================
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/torch/_utils.py:776: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+  return self.fget.__get__(instance, owner)()
+device: cuda
+Loaded expert_small from checkpoints/cnnNoROI/expert_small_best.pth
+Loaded expert_large from checkpoints/cnnNoROI/expert_large_best.pth
+Running inference on 5000 images …
+Inference:   0%|          | 0/5000 [00:00<?, ?it/s]Inference:   0%|          | 0/5000 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/src/cnnNoROI/infer_moe.py", line 168, in <module>
+    main()
+  File "/gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/src/cnnNoROI/infer_moe.py", line 143, in main
+    torch.from_numpy(np.load(embedding_path))
+  File "/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/npyio.py", line 427, in load
+    fid = stack.enter_context(open(os_fspath(file), "rb"))
+FileNotFoundError: [Errno 2] No such file or directory: '/gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/data/medsam-predictions/embeddings/XRAY_PENGWIN_001_0026.npy'

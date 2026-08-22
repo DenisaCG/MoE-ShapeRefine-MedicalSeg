@@ -6,10 +6,12 @@ from pathlib import Path
 from torch.utils.data import Dataset, DataLoader
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from dataloader_utils import load_pengwin_label, decode_pengwin_fragment_from_record, resolve_existing_path, load_prediction_masks
+from paths import TOPLEVEL_DATA_ROOT
 
 CSV_DIR = Path(__file__).parent
-GT_DIR  = Path("/gpfs/home5/scur0509/projects/data/pengwin/original/task2_xray/train/output/images/x-ray")
+GT_DIR  = TOPLEVEL_DATA_ROOT / "pengwin" / "original" / "task2_xray" / "train" / "output" / "images" / "x-ray"
 
 
 class FragmentDataset(Dataset):
@@ -52,6 +54,7 @@ def build_expert_dataloaders(
     batch_size: int = 8,
     num_workers: int = 4,
     large_subsample: int | None = None,
+    csv_dir: Path | None = None,
 ):
     """
     Load gated_{split}_records.csv and return one DataLoader per expert.
@@ -60,8 +63,14 @@ def build_expert_dataloaders(
     Args:
         large_subsample: if set, subsample expert_large to this many fragments
                          while preserving SA/LI/RI class proportions.
+        csv_dir: directory containing gated_{split}_records.csv. Defaults to
+                 CSV_DIR (this file's directory) — the canonical gating output.
+                 Pass a different directory to use an alternate gating run
+                 (e.g. a different area threshold or random routing) without
+                 touching the canonical CSVs.
     """
-    csv_path = CSV_DIR / f"gated_{split}_records.csv"
+    csv_dir  = csv_dir or CSV_DIR
+    csv_path = csv_dir / f"gated_{split}_records.csv"
     if not csv_path.exists():
         raise FileNotFoundError(
             f"{csv_path} not found. Run `python gating_mechanism.py` first."
@@ -84,7 +93,7 @@ def build_expert_dataloaders(
         loaders[expert] = DataLoader(
             FragmentDataset(records),
             batch_size=batch_size,
-            shuffle=shuffle,
+            shuffle=shuffle and len(records) > 0,
             num_workers=num_workers,
             pin_memory=True,
         )

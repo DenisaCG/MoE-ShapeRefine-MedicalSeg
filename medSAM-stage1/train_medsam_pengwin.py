@@ -37,7 +37,12 @@ CSV_DIR = PROJECT_ROOT / "src" / "gating_mechanism"
 GT_DIR = PROJECT_ROOT.parent / "data" / "pengwin" / "original" / "task2_xray" / "train" / "output" / "images" / "x-ray"
 IMAGE_DIR = PROJECT_ROOT.parent / "data" / "pengwin" / "original" / "task2_xray" / "train" / "input" / "images" / "x-ray"
 DEFAULT_CHECKPOINT = MEDSAM_ROOT / "work_dir" / "MedSAM" / "medsam_vit_b.pth"
-DEFAULT_CKPT_DIR = Path("/scratch-shared/scur0509/checkpoints/medsam-finetuned")
+
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+from paths import SCRATCH_CHECKPOINTS
+
+DEFAULT_CKPT_DIR = SCRATCH_CHECKPOINTS / "medsam-finetuned"
 
 if str(MEDSAM_ROOT) not in sys.path:
     sys.path.insert(0, str(MEDSAM_ROOT))
@@ -134,7 +139,7 @@ class PengwinFragmentDataset(Dataset):
     def __len__(self) -> int:
         return len(self.records)
 
-    def __getitem__(self, idx: int):
+    def _load(self, idx: int):
         rec = self.records[idx]
         sample_name = rec["sample_name"]
         case_id = sample_name.replace("XRAY_PENGWIN_", "")  # e.g. 001_0000
@@ -164,6 +169,17 @@ class PengwinFragmentDataset(Dataset):
         bbox_t = torch.from_numpy(bbox_1024).float()                    # (4,)
 
         return image_t, gt_t, bbox_t
+
+    def __getitem__(self, idx: int):
+        # Corpus has known-corrupt raw .tif files (see 042_0211.tif, 082_0302.tif
+        # incidents) — a multi-day training run must not die on one bad sample.
+        for attempt in range(len(self.records)):
+            try:
+                return self._load((idx + attempt) % len(self.records))
+            except Exception as e:
+                bad_rec = self.records[(idx + attempt) % len(self.records)]
+                print(f"  [skip] corrupt sample {bad_rec.get('sample_name')}: {e}")
+        raise RuntimeError("No loadable sample found in dataset.")
 
 
 # ---------------------------------------------------------------------------

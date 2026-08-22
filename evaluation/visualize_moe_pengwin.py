@@ -278,14 +278,14 @@ def visualize_fragment(
 
     # --- figure ---
     fig, axes = plt.subplots(1, 5, figsize=(20, 4))
-    fig.patch.set_facecolor("#1a1a1a")
+    fig.patch.set_facecolor("#ffffff")
 
     panels = [panel_xray, panel_medsam, panel_moe, panel_gt, panel_diff]
     titles = ["X-ray", "MedSAM", method_label, "Ground truth", "Diff"]
 
     for ax, panel, title in zip(axes, panels, titles):
         ax.imshow(panel, interpolation="nearest")
-        ax.set_title(title, color="white", fontsize=11, pad=4)
+        ax.set_title(title, color="black", fontsize=11, pad=4)
         ax.axis("off")
 
     # Metric annotations inside method panels, so they remain visible per image.
@@ -302,15 +302,15 @@ def visualize_fragment(
     axes[4].legend(
         handles=legend_patches, loc="lower center",
         bbox_to_anchor=(0.5, -0.22), ncol=2,
-        fontsize=8, framealpha=0.3, labelcolor="white",
-        facecolor="#1a1a1a",
+        fontsize=8, framealpha=0.3, labelcolor="black",
+        facecolor="#ffffff",
     )
 
     suptitle = (
         f"{sample_name}  ·  {category_name}  ·  {size_group}  ·  "
         f"[{group_label}]"
     )
-    fig.suptitle(suptitle, color="white", fontsize=11, y=1.01)
+    fig.suptitle(suptitle, color="black", fontsize=11, y=1.01)
     plt.tight_layout()
 
     fname = f"{group_label}__{sample_name}__frag{instance_idx:03d}__{category_name}__{size_group}__delta{delta_dice:+.3f}.png"

@@ -8,7 +8,7 @@ import pandas as pd
 from PIL import Image
 from skimage import transform
 
-from matplotlib.path import Path
+from matplotlib.path import Path as MplPath
 from matplotlib.patches import PathPatch, Rectangle
 
 CLASS_COLORS = {
@@ -572,18 +572,18 @@ def plot_class_size_flow(frame: pd.DataFrame, path: Path) -> None:
             (x0, y0_top),
         ]
         codes = [
-            Path.MOVETO,
-            Path.CURVE4,
-            Path.CURVE4,
-            Path.CURVE4,
-            Path.LINETO,
-            Path.CURVE4,
-            Path.CURVE4,
-            Path.CURVE4,
-            Path.CLOSEPOLY,
+            MplPath.MOVETO,
+            MplPath.CURVE4,
+            MplPath.CURVE4,
+            MplPath.CURVE4,
+            MplPath.LINETO,
+            MplPath.CURVE4,
+            MplPath.CURVE4,
+            MplPath.CURVE4,
+            MplPath.CLOSEPOLY,
         ]
         patch = PathPatch(
-            Path(verts, codes),
+            MplPath(verts, codes),
             facecolor=color,
             edgecolor="none",
             alpha=alpha,

@@ -1,0 +1,27 @@
+============================================================================================== 
+Warning! Mixing Conda and module environments may lead to corruption of the
+user environment. 
+We do not recommend users mixing those two environments unless absolutely
+necessary. Note that 
+SURF does not provide any support for Conda environment.
+For more information, please refer to our software policy page:
+https://servicedesk.surf.nl/wiki/display/WIKI/Software+policy+Snellius#SoftwarepolicySnellius-UseofAnacondaandMinicondaenvironmentsonSnellius 
+
+Remember that many packages have already been installed on the system and can
+be loaded using 
+the 'module load <package__name>' command. If you are uncertain if a package is
+already available 
+on the system, please use 'module avail' or 'module spider' to search for it.
+============================================================================================== 
+========================================
+job id : 24425094
+host   : tcn393.local.snellius.surf.nl
+start  : Sat Jul  4 14:41:08 CEST 2026
+ode-steps: 40
+========================================
+Traceback (most recent call last):
+  File "/gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/evaluation/compare_roi_noroi_pengwin.py", line 692, in <module>
+    main()
+  File "/gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/evaluation/compare_roi_noroi_pengwin.py", line 641, in main
+    raise FileNotFoundError(f"--flowsdf-csv not found: {args.flowsdf_csv}")
+FileNotFoundError: --flowsdf-csv not found: data/flowsdf-moe-predictions/test/stepsize_40/csv/evaluation_flowsdf.csv

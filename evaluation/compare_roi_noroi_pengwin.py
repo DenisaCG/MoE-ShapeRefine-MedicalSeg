@@ -16,11 +16,13 @@ Diff colour key:
     method colours = exactly that method/those methods correct
     white = all correct   dark = all wrong
 
-Fragment selection (all relative to cnnROI − cnnNoROI delta):
-    roi_wins   — largest positive delta_dice  (RoI crops helped most)
-    roi_loses  — largest negative delta_dice  (RoI crops hurt most)
-    small      — random sample from expert_small population
-    large      — random sample from expert_large population
+Fragment selection:
+    roi_wins       — largest positive (dice_roi − dice_noroi)              (RoI crops helped most)
+    roi_loses      — largest negative (dice_roi − dice_noroi)              (RoI crops hurt most)
+    flowsdf_wins   — largest positive (dice_flowsdf − best-of-cnn dice)    (FlowSDF beat both CNNs most)
+    flowsdf_loses  — largest negative (dice_flowsdf − best-of-cnn dice)    (FlowSDF lagged both CNNs most)
+    random_small   — random sample from expert_small population
+    random_large   — random sample from expert_large population
 
 Also prints a per-group metrics table comparing cnnNoROI → cnnROI, and FlowSDF
 when available.
@@ -42,6 +44,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import re
 import sys
 from pathlib import Path
 
@@ -75,6 +78,11 @@ OVERLAY_ALPHA = 0.45
 MASK_SIZE     = 1024
 PAD_PX        = 40
 MERGE_KEYS    = ["sample_name", "fragment_index"]
+
+# Matches sample_name + fragment index out of filenames produced by this script
+# or by visualize_moe_pengwin.py, e.g.
+# "random_large__XRAY_PENGWIN_011_0118__frag000__SA__large__delta+0.272.png"
+FRAGMENT_FROM_FNAME_RE = re.compile(r"(?P<sample>XRAY_PENGWIN_\d+_\d+)__frag(?P<frag>\d+)")
 
 
 # ---------------------------------------------------------------------------
@@ -423,11 +431,11 @@ def visualize_fragment(
     fig_width = 28 if panel_flowsdf is not None else 24
 
     fig, axes = plt.subplots(1, len(panels), figsize=(fig_width, 4))
-    fig.patch.set_facecolor("#1a1a1a")
+    fig.patch.set_facecolor("#ffffff")
 
     for ax, panel, title in zip(axes, panels, titles):
         ax.imshow(panel, interpolation="nearest")
-        ax.set_title(title, color="white", fontsize=10, pad=4)
+        ax.set_title(title, color="black", fontsize=10, pad=4)
         ax.axis("off")
 
     # dynamic label indices
@@ -486,14 +494,14 @@ def visualize_fragment(
     diff_ax.legend(
         handles=legend_patches, loc="lower center",
         bbox_to_anchor=(0.5, -0.22), ncol=legend_columns,
-        fontsize=8, framealpha=0.3, labelcolor="white",
-        facecolor="#1a1a1a",
+        fontsize=8, framealpha=0.3, labelcolor="black",
+        facecolor="#ffffff",
     )
 
     fig.suptitle(
         f"{sample_name}  ·  {category_name}  ·  {size_group}  ·  "
         f"[{group_label}]",
-        color="white", fontsize=10, y=1.01,
+        color="black", fontsize=10, y=1.01,
     )
     plt.tight_layout()
 
@@ -538,14 +546,57 @@ def build_comparison_df(noroi_csv: Path, roi_csv: Path, flowsdf_csv: Path | None
                 merged[f"delta_{metric}_flowsdf_vs_noroi"] = merged[col_flowsdf] - merged[col_noroi]
             if col_roi in merged.columns:
                 merged[f"delta_{metric}_flowsdf_vs_roi"] = merged[col_flowsdf] - merged[col_roi]
+            if col_roi in merged.columns and col_noroi in merged.columns:
+                merged[f"{metric}_cnn_best"] = merged[[col_roi, col_noroi]].max(axis=1)
+                merged[f"delta_{metric}_flowsdf_vs_cnn_best"] = (
+                    merged[col_flowsdf] - merged[f"{metric}_cnn_best"]
+                )
 
     return merged
+
+
+def parse_fragment_spec(spec: str) -> tuple[str, int]:
+    """Extract (sample_name, fragment_index) from a filename, path, or explicit
+    "sample_name:fragment_index" spec."""
+    if ":" in spec and not FRAGMENT_FROM_FNAME_RE.search(spec):
+        sample_name, _, frag = spec.rpartition(":")
+        return sample_name, int(frag)
+    match = FRAGMENT_FROM_FNAME_RE.search(Path(spec).name)
+    if not match:
+        raise ValueError(
+            f"Could not parse sample_name/fragment_index from '{spec}'. "
+            "Expected a filename like '..._XRAY_PENGWIN_011_0118__frag000_...' "
+            "or an explicit 'sample_name:fragment_index' spec."
+        )
+    return match.group("sample"), int(match.group("frag"))
+
+
+def select_exact_fragments(
+    df: pd.DataFrame,
+    specs: list[str],
+) -> list[tuple[pd.Series, str]]:
+    """Select specific fragments named by --select-images, in the order given."""
+    selected: list[tuple[pd.Series, str]] = []
+    for spec in specs:
+        sample_name, fragment_index = parse_fragment_spec(spec)
+        match = df[
+            (df["sample_name"] == sample_name) & (df["fragment_index"] == fragment_index)
+        ]
+        if match.empty:
+            raise ValueError(
+                f"No matching fragment for sample_name='{sample_name}', "
+                f"fragment_index={fragment_index} (parsed from '{spec}') in the merged CSVs."
+            )
+        selected.append((match.iloc[0], "selected"))
+    return selected
 
 
 def select_fragments(
     df: pd.DataFrame,
     n_roi_wins: int,
     n_roi_loses: int,
+    n_flowsdf_wins: int,
+    n_flowsdf_loses: int,
     n_random_small: int,
     n_random_large: int,
     seed: int = 42,
@@ -554,14 +605,21 @@ def select_fragments(
     valid   = df.dropna(subset=["delta_dice"])
     selected: list[tuple[pd.Series, str]] = []
 
-    def pick(subset: pd.DataFrame, n: int, label: str, ascending: bool) -> None:
+    def pick(subset: pd.DataFrame, n: int, label: str, sort_col: str, ascending: bool) -> None:
         if subset.empty or n == 0:
             return
-        for _, row in subset.sort_values("delta_dice", ascending=ascending).head(n).iterrows():
+        for _, row in subset.sort_values(sort_col, ascending=ascending).head(n).iterrows():
             selected.append((row, label))
 
-    pick(valid, n_roi_wins,  "roi_wins",  ascending=False)
-    pick(valid, n_roi_loses, "roi_loses", ascending=True)
+    pick(valid, n_roi_wins,  "roi_wins",  "delta_dice", ascending=False)
+    pick(valid, n_roi_loses, "roi_loses", "delta_dice", ascending=True)
+
+    # FlowSDF wins/loses relative to the best of the two CNN variants per fragment.
+    flowsdf_col = "delta_dice_flowsdf_vs_cnn_best"
+    if flowsdf_col in df.columns:
+        valid_flowsdf = df.dropna(subset=[flowsdf_col])
+        pick(valid_flowsdf, n_flowsdf_wins,  "flowsdf_wins",  flowsdf_col, ascending=False)
+        pick(valid_flowsdf, n_flowsdf_loses, "flowsdf_loses", flowsdf_col, ascending=True)
 
     size_col = "size_group_noroi" if "size_group_noroi" in df.columns else None
     if size_col:
@@ -611,12 +669,26 @@ def parse_args() -> argparse.Namespace:
                         help="Fragments where cnnROI improves most over cnnNoROI.")
     parser.add_argument("--n-roi-loses",    type=int, default=5,
                         help="Fragments where cnnROI degrades most vs cnnNoROI.")
+    parser.add_argument("--n-flowsdf-wins",  type=int, default=5,
+                        help="Fragments where FlowSDF improves most over the best CNN variant (requires --flowsdf-csv).")
+    parser.add_argument("--n-flowsdf-loses", type=int, default=5,
+                        help="Fragments where FlowSDF degrades most vs the best CNN variant (requires --flowsdf-csv).")
     parser.add_argument("--n-random-small", type=int, default=5)
     parser.add_argument("--n-random-large", type=int, default=5)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument(
         "--case-id", type=str, default=None,
         help="If set, restrict fragment selection to rows whose sample_name contains this string.",
+    )
+    parser.add_argument(
+        "--select-images", type=str, nargs="+", default=None,
+        help=(
+            "Regenerate the full multi-method comparison for these exact fragments instead of "
+            "the win/lose/random selection. Accepts filenames/paths produced by this script or "
+            "by visualize_moe_pengwin.py (sample_name + fragment index are parsed out of the "
+            "name, e.g. '..._XRAY_PENGWIN_011_0118__frag000_...'), or explicit "
+            "'sample_name:fragment_index' specs."
+        ),
     )
     parser.add_argument(
         "--no-xray",
@@ -660,14 +732,19 @@ def main() -> None:
         if merged.empty:
             raise SystemExit(f"No fragments matched --case-id '{args.case_id}'")
 
-    fragments = select_fragments(
-        merged,
-        n_roi_wins=args.n_roi_wins,
-        n_roi_loses=args.n_roi_loses,
-        n_random_small=args.n_random_small,
-        n_random_large=args.n_random_large,
-        seed=args.seed,
-    )
+    if args.select_images:
+        fragments = select_exact_fragments(merged, args.select_images)
+    else:
+        fragments = select_fragments(
+            merged,
+            n_roi_wins=args.n_roi_wins,
+            n_roi_loses=args.n_roi_loses,
+            n_flowsdf_wins=args.n_flowsdf_wins,
+            n_flowsdf_loses=args.n_flowsdf_loses,
+            n_random_small=args.n_random_small,
+            n_random_large=args.n_random_large,
+            seed=args.seed,
+        )
     print(f"Selected {len(fragments)} fragments — generating figures …\n")
 
     for row, group_label in fragments:

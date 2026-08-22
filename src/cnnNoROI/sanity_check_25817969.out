@@ -1,0 +1,186 @@
+============================================================================================== 
+Warning! Mixing Conda and module environments may lead to corruption of the
+user environment. 
+We do not recommend users mixing those two environments unless absolutely
+necessary. Note that 
+SURF does not provide any support for Conda environment.
+For more information, please refer to our software policy page:
+https://servicedesk.surf.nl/wiki/display/WIKI/Software+policy+Snellius#SoftwarepolicySnellius-UseofAnacondaandMinicondaenvironmentsonSnellius 
+
+Remember that many packages have already been installed on the system and can
+be loaded using 
+the 'module load <package__name>' command. If you are uncertain if a package is
+already available 
+on the system, please use 'module avail' or 'module spider' to search for it.
+============================================================================================== 
+========================================
+job id  : 25817969
+host    : gcn22.local.snellius.surf.nl
+start   : Wed Aug 19 13:27:22 CEST 2026
+gpu     : NVIDIA A100-SXM4-40GB, 40960 MiB
+========================================
+
+--- Step 1: cnnNoROI inference, 200 test images ---
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/torch/_utils.py:776: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+  return self.fget.__get__(instance, owner)()
+device: cuda
+Loaded expert_small from /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/checkpoints/cnnNoROI/expert_small_best.pth
+Loaded expert_large from /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/checkpoints/cnnNoROI/expert_large_best.pth
+Running inference on 200 images …
+Inference:   0%|          | 0/200 [00:00<?, ?it/s]/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/torch/nn/modules/conv.py:459: UserWarning: Applied workaround for CuDNN issue, install nvrtc.so (Triggered internally at /opt/conda/conda-bld/pytorch_1682343995026/work/aten/src/ATen/native/cudnn/Conv_v8.cpp:80.)
+  return F.conv2d(input, weight, bias, self.stride,
+Inference:   0%|          | 1/200 [00:00<02:05,  1.59it/s]Inference:   1%|          | 2/200 [00:00<01:05,  3.03it/s]Inference:   2%|▏         | 3/200 [00:00<00:48,  4.03it/s]Inference:   2%|▎         | 5/200 [00:01<00:33,  5.74it/s]Inference:   4%|▎         | 7/200 [00:01<00:29,  6.44it/s]Inference:   4%|▍         | 8/200 [00:01<00:29,  6.59it/s]Inference:   4%|▍         | 9/200 [00:01<00:26,  7.08it/s]Inference:   5%|▌         | 10/200 [00:01<00:27,  6.97it/s]Inference:   6%|▌         | 11/200 [00:01<00:25,  7.37it/s]Inference:   6%|▌         | 12/200 [00:02<00:28,  6.63it/s]Inference:   6%|▋         | 13/200 [00:02<00:29,  6.34it/s]Inference:   7%|▋         | 14/200 [00:02<00:27,  6.79it/s]Inference:   8%|▊         | 15/200 [00:02<00:24,  7.44it/s]Inference:   8%|▊         | 16/200 [00:02<00:26,  6.87it/s]Inference:   8%|▊         | 17/200 [00:02<00:24,  7.53it/s]Inference:   9%|▉         | 18/200 [00:02<00:23,  7.86it/s]Inference:  10%|▉         | 19/200 [00:03<00:22,  8.08it/s]Inference:  10%|█         | 20/200 [00:03<00:28,  6.39it/s]Inference:  11%|█         | 22/200 [00:03<00:23,  7.60it/s]Inference:  12%|█▏        | 23/200 [00:03<00:23,  7.55it/s]Inference:  12%|█▏        | 24/200 [00:03<00:24,  7.30it/s]Inference:  12%|█▎        | 25/200 [00:04<00:34,  5.02it/s]Inference:  13%|█▎        | 26/200 [00:04<00:33,  5.19it/s]Inference:  14%|█▎        | 27/200 [00:04<00:30,  5.74it/s]Inference:  14%|█▍        | 28/200 [00:04<00:27,  6.29it/s]Inference:  14%|█▍        | 29/200 [00:04<00:26,  6.40it/s]Inference:  15%|█▌        | 30/200 [00:04<00:25,  6.67it/s]Inference:  16%|█▌        | 31/200 [00:04<00:23,  7.32it/s]Inference:  16%|█▌        | 32/200 [00:05<00:23,  7.11it/s]Inference:  16%|█▋        | 33/200 [00:05<00:22,  7.58it/s]Inference:  17%|█▋        | 34/200 [00:05<00:20,  8.12it/s]Inference:  18%|█▊        | 35/200 [00:05<00:24,  6.62it/s]Inference:  18%|█▊        | 36/200 [00:05<00:22,  7.33it/s]Inference:  18%|█▊        | 37/200 [00:05<00:20,  7.86it/s]Inference:  19%|█▉        | 38/200 [00:05<00:25,  6.35it/s]Inference:  20%|█▉        | 39/200 [00:06<00:24,  6.48it/s]Inference:  20%|██        | 40/200 [00:06<00:24,  6.62it/s]Inference:  20%|██        | 41/200 [00:06<00:23,  6.67it/s]Inference:  21%|██        | 42/200 [00:06<00:22,  6.96it/s]Inference:  22%|██▏       | 43/200 [00:06<00:22,  7.10it/s]Inference:  22%|██▏       | 44/200 [00:06<00:20,  7.52it/s]Inference:  22%|██▎       | 45/200 [00:06<00:21,  7.35it/s]Inference:  23%|██▎       | 46/200 [00:07<00:22,  6.95it/s]Inference:  24%|██▎       | 47/200 [00:07<00:20,  7.37it/s]Inference:  24%|██▍       | 48/200 [00:07<00:21,  7.21it/s]Inference:  24%|██▍       | 49/200 [00:07<00:20,  7.51it/s]Inference:  25%|██▌       | 50/200 [00:07<00:20,  7.38it/s]Inference:  26%|██▌       | 52/200 [00:07<00:18,  7.89it/s]Inference:  26%|██▋       | 53/200 [00:07<00:18,  7.98it/s]Inference:  27%|██▋       | 54/200 [00:08<00:19,  7.51it/s]Inference:  28%|██▊       | 55/200 [00:08<00:19,  7.30it/s]Inference:  28%|██▊       | 56/200 [00:08<00:25,  5.59it/s]Inference:  28%|██▊       | 57/200 [00:08<00:25,  5.51it/s]Inference:  29%|██▉       | 58/200 [00:08<00:25,  5.59it/s]Inference:  30%|██▉       | 59/200 [00:09<00:24,  5.73it/s]Inference:  30%|███       | 60/200 [00:09<00:23,  6.01it/s]Inference:  30%|███       | 61/200 [00:09<00:22,  6.11it/s]Inference:  31%|███       | 62/200 [00:09<00:21,  6.29it/s]Inference:  32%|███▏      | 63/200 [00:09<00:20,  6.63it/s]Inference:  32%|███▏      | 64/200 [00:09<00:18,  7.37it/s]Inference:  32%|███▎      | 65/200 [00:09<00:19,  7.03it/s]Inference:  33%|███▎      | 66/200 [00:10<00:18,  7.15it/s]Inference:  34%|███▎      | 67/200 [00:10<00:19,  6.86it/s]Inference:  34%|███▍      | 68/200 [00:10<00:19,  6.93it/s]Inference:  34%|███▍      | 69/200 [00:10<00:17,  7.32it/s]Inference:  35%|███▌      | 70/200 [00:10<00:21,  6.03it/s]Inference:  36%|███▌      | 71/200 [00:10<00:19,  6.63it/s]Inference:  36%|███▌      | 72/200 [00:10<00:17,  7.14it/s]Inference:  36%|███▋      | 73/200 [00:11<00:17,  7.13it/s]Inference:  37%|███▋      | 74/200 [00:11<00:16,  7.64it/s]Inference:  38%|███▊      | 76/200 [00:11<00:15,  8.14it/s]Inference:  38%|███▊      | 77/200 [00:11<00:14,  8.40it/s]Inference:  39%|███▉      | 78/200 [00:11<00:14,  8.41it/s]Inference:  40%|███▉      | 79/200 [00:11<00:16,  7.53it/s]Inference:  40%|████      | 80/200 [00:11<00:15,  7.80it/s]Inference:  40%|████      | 81/200 [00:12<00:19,  6.17it/s]Inference:  41%|████      | 82/200 [00:12<00:18,  6.32it/s]Inference:  42%|████▏     | 83/200 [00:12<00:17,  6.88it/s]Inference:  42%|████▏     | 84/200 [00:12<00:16,  7.15it/s]Inference:  42%|████▎     | 85/200 [00:12<00:15,  7.23it/s]Inference:  43%|████▎     | 86/200 [00:12<00:14,  7.62it/s]Inference:  44%|████▎     | 87/200 [00:12<00:15,  7.22it/s]Inference:  44%|████▍     | 88/200 [00:13<00:15,  7.15it/s]Inference:  44%|████▍     | 89/200 [00:13<00:16,  6.94it/s]Inference:  45%|████▌     | 90/200 [00:13<00:15,  7.18it/s]Inference:  46%|████▌     | 91/200 [00:13<00:14,  7.45it/s]Inference:  46%|████▌     | 92/200 [00:13<00:14,  7.54it/s]Inference:  46%|████▋     | 93/200 [00:13<00:17,  6.26it/s]Inference:  47%|████▋     | 94/200 [00:14<00:17,  6.07it/s]Inference:  48%|████▊     | 95/200 [00:14<00:16,  6.46it/s]Inference:  48%|████▊     | 96/200 [00:14<00:14,  7.01it/s]Inference:  48%|████▊     | 97/200 [00:14<00:14,  7.22it/s]Inference:  50%|████▉     | 99/200 [00:14<00:12,  8.37it/s]Inference:  50%|█████     | 100/200 [00:14<00:11,  8.58it/s]Inference:  50%|█████     | 101/200 [00:14<00:11,  8.54it/s]Inference:  51%|█████     | 102/200 [00:15<00:15,  6.43it/s]Inference:  52%|█████▏    | 103/200 [00:15<00:15,  6.22it/s]Inference:  52%|█████▏    | 104/200 [00:15<00:16,  5.82it/s]Inference:  52%|█████▎    | 105/200 [00:15<00:17,  5.38it/s]Inference:  53%|█████▎    | 106/200 [00:15<00:17,  5.45it/s]Inference:  54%|█████▎    | 107/200 [00:16<00:17,  5.20it/s]Inference:  54%|█████▍    | 108/200 [00:16<00:15,  5.99it/s]Inference:  55%|█████▍    | 109/200 [00:16<00:13,  6.55it/s]Inference:  55%|█████▌    | 110/200 [00:16<00:13,  6.59it/s]Inference:  56%|█████▌    | 111/200 [00:16<00:13,  6.78it/s]Inference:  56%|█████▌    | 112/200 [00:16<00:12,  7.03it/s]Inference:  56%|█████▋    | 113/200 [00:16<00:12,  6.90it/s]Inference:  57%|█████▋    | 114/200 [00:16<00:12,  6.79it/s]Inference:  57%|█████▊    | 115/200 [00:17<00:12,  7.08it/s]Inference:  58%|█████▊    | 116/200 [00:17<00:12,  6.95it/s]Inference:  58%|█████▊    | 117/200 [00:17<00:11,  7.27it/s]Inference:  59%|█████▉    | 118/200 [00:17<00:10,  7.49it/s]Inference:  60%|█████▉    | 119/200 [00:17<00:10,  7.79it/s]Inference:  60%|██████    | 120/200 [00:17<00:11,  7.21it/s]Inference:  60%|██████    | 121/200 [00:17<00:11,  6.97it/s]Inference:  61%|██████    | 122/200 [00:18<00:13,  5.98it/s]Inference:  62%|██████▏   | 123/200 [00:18<00:11,  6.52it/s]Inference:  62%|██████▏   | 124/200 [00:18<00:11,  6.53it/s]Inference:  62%|██████▎   | 125/200 [00:18<00:12,  6.14it/s]Inference:  63%|██████▎   | 126/200 [00:18<00:10,  6.84it/s]Inference:  64%|██████▎   | 127/200 [00:18<00:10,  7.07it/s]Inference:  64%|██████▍   | 128/200 [00:19<00:11,  6.23it/s]Inference:  64%|██████▍   | 129/200 [00:19<00:10,  6.61it/s]Inference:  65%|██████▌   | 130/200 [00:19<00:10,  6.72it/s]Inference:  66%|██████▌   | 131/200 [00:19<00:09,  7.15it/s]Inference:  66%|██████▌   | 132/200 [00:19<00:10,  6.29it/s]Inference:  66%|██████▋   | 133/200 [00:19<00:10,  6.49it/s]Inference:  67%|██████▋   | 134/200 [00:19<00:10,  6.15it/s]Inference:  68%|██████▊   | 135/200 [00:20<00:10,  6.19it/s]Inference:  68%|██████▊   | 136/200 [00:20<00:10,  6.29it/s]Inference:  68%|██████▊   | 137/200 [00:20<00:13,  4.66it/s]Inference:  69%|██████▉   | 138/200 [00:20<00:11,  5.30it/s]Inference:  70%|██████▉   | 139/200 [00:20<00:11,  5.20it/s]Inference:  70%|███████   | 140/200 [00:21<00:11,  5.36it/s]Inference:  70%|███████   | 141/200 [00:21<00:10,  5.88it/s]Inference:  71%|███████   | 142/200 [00:21<00:09,  6.22it/s]Inference:  72%|███████▏  | 143/200 [00:21<00:08,  6.45it/s]Inference:  72%|███████▏  | 144/200 [00:21<00:07,  7.02it/s]Inference:  72%|███████▎  | 145/200 [00:21<00:07,  7.49it/s]Inference:  73%|███████▎  | 146/200 [00:21<00:07,  6.96it/s]Inference:  74%|███████▎  | 147/200 [00:22<00:07,  6.65it/s]Inference:  74%|███████▍  | 148/200 [00:22<00:07,  6.51it/s]Inference:  74%|███████▍  | 149/200 [00:22<00:07,  6.48it/s]Inference:  75%|███████▌  | 150/200 [00:22<00:07,  6.95it/s]Inference:  76%|███████▌  | 151/200 [00:22<00:07,  6.18it/s]Inference:  76%|███████▌  | 152/200 [00:22<00:07,  6.19it/s]Inference:  76%|███████▋  | 153/200 [00:23<00:07,  6.38it/s]Inference:  77%|███████▋  | 154/200 [00:23<00:06,  6.88it/s]Inference:  78%|███████▊  | 155/200 [00:23<00:06,  6.93it/s]Inference:  78%|███████▊  | 157/200 [00:23<00:05,  7.29it/s]Inference:  79%|███████▉  | 158/200 [00:23<00:05,  7.37it/s]Inference:  80%|███████▉  | 159/200 [00:23<00:05,  7.28it/s]Inference:  80%|████████  | 160/200 [00:24<00:05,  6.73it/s]Inference:  80%|████████  | 161/200 [00:24<00:05,  6.78it/s]Inference:  81%|████████  | 162/200 [00:24<00:05,  7.14it/s]Inference:  82%|████████▏ | 163/200 [00:24<00:05,  6.58it/s]Inference:  82%|████████▏ | 164/200 [00:25<00:12,  2.99it/s]Inference:  82%|████████▎ | 165/200 [00:25<00:10,  3.26it/s]Inference:  83%|████████▎ | 166/200 [00:25<00:08,  3.92it/s]Inference:  84%|████████▎ | 167/200 [00:25<00:08,  3.87it/s]Inference:  84%|████████▍ | 168/200 [00:26<00:08,  4.00it/s]Inference:  84%|████████▍ | 169/200 [00:26<00:06,  4.66it/s]Inference:  85%|████████▌ | 170/200 [00:26<00:05,  5.06it/s]Inference:  86%|████████▌ | 171/200 [00:26<00:05,  5.75it/s]Inference:  86%|████████▌ | 172/200 [00:26<00:04,  6.13it/s]Inference:  86%|████████▋ | 173/200 [00:26<00:03,  6.77it/s]Inference:  87%|████████▋ | 174/200 [00:26<00:04,  6.33it/s]Inference:  88%|████████▊ | 176/200 [00:27<00:03,  7.34it/s]Inference:  88%|████████▊ | 177/200 [00:27<00:03,  7.45it/s]Inference:  89%|████████▉ | 178/200 [00:27<00:02,  7.40it/s]Inference:  90%|████████▉ | 179/200 [00:27<00:03,  6.84it/s]Inference:  90%|█████████ | 180/200 [00:27<00:03,  5.93it/s]Inference:  90%|█████████ | 181/200 [00:28<00:03,  6.10it/s]Inference:  91%|█████████ | 182/200 [00:28<00:02,  6.71it/s]Inference:  92%|█████████▏| 183/200 [00:28<00:02,  6.86it/s]Inference:  92%|█████████▏| 184/200 [00:28<00:02,  6.86it/s]Inference:  92%|█████████▎| 185/200 [00:28<00:02,  5.91it/s]Inference:  93%|█████████▎| 186/200 [00:28<00:02,  6.38it/s]Inference:  94%|█████████▎| 187/200 [00:28<00:02,  6.42it/s]Inference:  94%|█████████▍| 188/200 [00:29<00:01,  6.70it/s]Inference:  94%|█████████▍| 189/200 [00:29<00:01,  7.21it/s]Inference:  95%|█████████▌| 190/200 [00:29<00:01,  7.09it/s]Inference:  96%|█████████▌| 192/200 [00:29<00:01,  7.59it/s]Inference:  96%|█████████▋| 193/200 [00:29<00:00,  7.93it/s]Inference:  97%|█████████▋| 194/200 [00:29<00:00,  7.69it/s]Inference:  98%|█████████▊| 195/200 [00:29<00:00,  7.86it/s]Inference:  98%|█████████▊| 196/200 [00:30<00:00,  7.92it/s]Inference:  98%|█████████▊| 197/200 [00:30<00:00,  7.86it/s]Inference:  99%|█████████▉| 198/200 [00:30<00:00,  5.89it/s]Inference: 100%|█████████▉| 199/200 [00:30<00:00,  6.26it/s]Inference: 100%|██████████| 200/200 [00:30<00:00,  6.76it/s]Inference: 100%|██████████| 200/200 [00:30<00:00,  6.51it/s]
+
+Done. Refined masks saved to: /scratch-shared/aramautar2/sanity_check_cnnnoroi/binary_masks
+
+--- Step 2: evaluate against PENGWIN GT (dice + iou only, + delta vs MedSAM baseline) ---
+prediction metadata: /scratch-local/aramautar2.25817969/tmp1zok5kdp.jsonl
+prediction mask root: /scratch-shared/aramautar2/sanity_check_cnnnoroi/binary_masks
+box metadata: /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/data/bounding-boxes-xrays/metadata.jsonl
+output csv: /scratch-shared/aramautar2/sanity_check_cnnnoroi/evaluation_sanity.csv
+records: 200
+limit: no
+skip boundary: True
+metric space: original
+num workers: 8
+area threshold: 131218.28989955317
+Evaluating predictions:   0%|          | 0/200 [00:00<?, ?it/s]Evaluating predictions:   0%|          | 1/200 [00:01<04:21,  1.32s/it]Evaluating predictions:  16%|█▋        | 33/200 [00:01<00:05, 28.97it/s]Evaluating predictions:  32%|███▎      | 65/200 [00:01<00:02, 54.77it/s]Evaluating predictions:  64%|██████▍   | 129/200 [00:02<00:00, 78.02it/s]Evaluating predictions:  72%|███████▎  | 145/200 [00:02<00:00, 82.75it/s]Evaluating predictions: 100%|██████████| 200/200 [00:02<00:00, 77.49it/s]
+
+Evaluation summary
+==========================================================================================
+Image records evaluated: 200
+Fragment rows written: 1023
+Failed records: 0
+Empty predictions: 0
+Empty GT masks: 0
+Area threshold on 1024 grid: 131218.28989955317
+
+Overall mean metrics:
+group                         n      dice_mean       iou_mean      hd95_mean      assd_mean
+-------------------------------------------------------------------------------------------
+overall                    1023         0.8129         0.6957            nan            nan
+
+Per-class mean metrics:
+group                         n      dice_mean       iou_mean      hd95_mean      assd_mean
+-------------------------------------------------------------------------------------------
+SA                          251         0.7723         0.6420            nan            nan
+LI                          402         0.8239         0.7089            nan            nan
+RI                          370         0.8286         0.7178            nan            nan
+
+Per-size mean metrics:
+group                         n      dice_mean       iou_mean      hd95_mean      assd_mean
+-------------------------------------------------------------------------------------------
+small                       511         0.8072         0.6891            nan            nan
+large                       512         0.8186         0.7022            nan            nan
+
+Per-class and per-size mean metrics:
+group                         n      dice_mean       iou_mean      hd95_mean      assd_mean
+-------------------------------------------------------------------------------------------
+SA/small                    113         0.7355         0.5985            nan            nan
+SA/large                    138         0.8024         0.6776            nan            nan
+LI/small                    198         0.8223         0.7075            nan            nan
+LI/large                    204         0.8255         0.7101            nan            nan
+RI/small                    200         0.8329         0.7220            nan            nan
+RI/large                    170         0.8236         0.7128            nan            nan
+==========================================================================================
+
+Saved evaluation CSV: /scratch-shared/aramautar2/sanity_check_cnnnoroi/evaluation_sanity.csv
+Metadata filter: 200/50000 images have predictions in binary_masks/
+Running: /home/aramautar2/.conda/envs/MoE/bin/python /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/evaluation/evaluate_medsam_pengwin.py --pred-mask-root /scratch-shared/aramautar2/sanity_check_cnnnoroi/binary_masks --pred-metadata /scratch-local/aramautar2.25817969/tmp1zok5kdp.jsonl --output-csv /scratch-shared/aramautar2/sanity_check_cnnnoroi/evaluation_sanity.csv --num-workers 8 --skip-boundary
+
+Delta CSV saved: /scratch-shared/aramautar2/sanity_check_cnnnoroi/evaluation_sanity_delta.csv
+
+MoE vs MedSAM summary:
+  dice: mean delta = +0.0927  improved = 92.3% of fragments  n = 1019
+  iou: mean delta = +0.1216  improved = 92.3% of fragments  n = 1019
+
+=== sanity check summary (cnnNoROI on fresh embeddings) ===
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+Evaluation summary
+==========================================================================================
+CSV: /scratch-shared/aramautar2/sanity_check_cnnnoroi/evaluation_sanity.csv
+Image records evaluated: 200
+Fragment rows written: 1023
+Failed records: not stored in CSV
+Empty predictions: 0
+Empty GT masks: 0
+Area threshold on 1024 grid: 131218.28989955317
+
+Overall mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+overall                         1023         0.8129         0.6957            nan            nan
+
+Per-class mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+SA                               251         0.7723         0.6420            nan            nan
+LI                               402         0.8239         0.7089            nan            nan
+RI                               370         0.8286         0.7178            nan            nan
+
+Per-size mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+small                            511         0.8072         0.6891            nan            nan
+large                            512         0.8186         0.7022            nan            nan
+
+Per-class and per-size mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+SA/small                         113         0.7355         0.5985            nan            nan
+SA/large                         138         0.8024         0.6776            nan            nan
+LI/small                         198         0.8223         0.7075            nan            nan
+LI/large                         204         0.8255         0.7101            nan            nan
+RI/small                         200         0.8329         0.7220            nan            nan
+RI/large                         170         0.8236         0.7128            nan            nan
+==========================================================================================
+========================================
+end : Wed Aug 19 13:28:16 CEST 2026
+========================================

@@ -5,7 +5,7 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=16
 #SBATCH --time=04:00:00
-#SBATCH --output=/gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/src/medsam-retrained/jobs-slurmOutputs/slurm_evaluate_medsam_retrained_%A.out
+#SBATCH --output=/gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/src/medsam-retrained/jobs-slurmOutputs/slurm_evaluate_medsam_retrained_%A.out
 
 set -euo pipefail
 
@@ -16,7 +16,7 @@ module load Anaconda3/2024.06-1
 source /sw/arch/RHEL9/EB_production/2024/software/Anaconda3/2024.06-1/etc/profile.d/conda.sh
 conda activate MoE
 
-cd /gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg
+cd /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg
 
 echo "========================================"
 echo "job id  : ${SLURM_JOB_ID}"

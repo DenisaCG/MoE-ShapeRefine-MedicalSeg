@@ -1,0 +1,27 @@
+============================================================================================== 
+Warning! Mixing Conda and module environments may lead to corruption of the
+user environment. 
+We do not recommend users mixing those two environments unless absolutely
+necessary. Note that 
+SURF does not provide any support for Conda environment.
+For more information, please refer to our software policy page:
+https://servicedesk.surf.nl/wiki/display/WIKI/Software+policy+Snellius#SoftwarepolicySnellius-UseofAnacondaandMinicondaenvironmentsonSnellius 
+
+Remember that many packages have already been installed on the system and can
+be loaded using 
+the 'module load <package__name>' command. If you are uncertain if a package is
+already available 
+on the system, please use 'module avail' or 'module spider' to search for it.
+============================================================================================== 
+========================================
+job id  : 24473790
+host    : gcn160.local.snellius.surf.nl
+start   : Mon Jul  6 16:38:22 CEST 2026
+gpu     : NVIDIA H100, 95830 MiB
+python  : /home/aramautar2/.conda/envs/flowSDF/bin/python
+ode-steps: 40
+========================================
+Traceback (most recent call last):
+  File "/gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/src/FlowSDF/infer_flowsdf_moe.py", line 26, in <module>
+    import numpy as np
+ModuleNotFoundError: No module named 'numpy'

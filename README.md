@@ -374,7 +374,7 @@ Useful options:
 
 Routes each fragment to `expert_small` or `expert_large` based on foreground pixel count on the 1024×1024 grid.
 
-**Threshold:** `area ≤ 10485` pixels (1% of 1024×1024) → `expert_small`, else → `expert_large`.
+**Threshold:** `area ≤ 5,402` pixels (≈0.52% of 1024×1024) → `expert_small`, else → `expert_large`.
 
 ```bash
 # Full run
@@ -385,7 +385,6 @@ python src/gating_mechanism/gating_mechanism.py --smoke
 ```
 
 Output CSVs (one row per fragment):
-
 ```text
 src/gating_mechanism/
   gated_train_records.csv

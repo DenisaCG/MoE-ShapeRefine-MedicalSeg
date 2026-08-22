@@ -212,8 +212,11 @@ def refine_fragment(
     return mask_up[0, 0].cpu().numpy().astype(np.uint8)
 
 
-def split_output_dir(output_root: Path, split: str) -> Path:
-    return output_root / split / "binary_masks"
+def split_output_dir(output_root: Path, split: str, run_subdir: str | None = None) -> Path:
+    base = output_root / split
+    if run_subdir:
+        base = base / run_subdir
+    return base / "binary_masks"
 
 
 def read_records(csv_path: Path) -> list[dict[str, str]]:
@@ -261,6 +264,24 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=REPO_ROOT / "data" / "flowsdf-moe-predictions",
         help="Root where <split>/binary_masks/*.npz and metadata are saved.",
+    )
+    parser.add_argument(
+        "--run-subdir",
+        default=None,
+        help=(
+            "Optional subdirectory nested under <output-root>/<split>/, e.g. "
+            "'stepsize_40'. Namespaces binary_masks/ and metadata.jsonl by run "
+            "(ODE step count, etc.) so different configs don't overwrite each other."
+        ),
+    )
+    parser.add_argument(
+        "--gating-csv-dir", type=Path, default=None,
+        help=(
+            "Directory containing gated_{split}_records.csv. Defaults to "
+            "src/gating_mechanism/ (the canonical 5402-threshold area routing). "
+            "Must match the gating CSV used for the checkpoints in "
+            "--checkpoint-dir (i.e. the same routing ablation arm)."
+        ),
     )
     parser.add_argument("--img-size", type=int, default=128)
     parser.add_argument("--img-cond-channels", type=int, default=257)
@@ -312,16 +333,18 @@ def main() -> None:
             fallback_img_cond_channels=args.img_cond_channels,
         )
 
-    csv_path = GATING_DIR / f"gated_{args.split}_records.csv"
+    gating_csv_dir = args.gating_csv_dir or GATING_DIR
+    csv_path = gating_csv_dir / f"gated_{args.split}_records.csv"
     if not csv_path.exists():
         raise FileNotFoundError(f"missing gated CSV: {csv_path}")
+    print(f"gating csv dir: {gating_csv_dir}")
 
     records = read_records(csv_path)
     sample_names = unique_sample_names(records)
     if args.limit is not None:
         sample_names = sample_names[: args.limit]
 
-    output_dir = split_output_dir(args.output_root, args.split)
+    output_dir = split_output_dir(args.output_root, args.split, args.run_subdir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
     metadata_rows = []
@@ -377,7 +400,7 @@ def main() -> None:
             }
         )
 
-    metadata_path = args.output_root / args.split / "metadata.jsonl"
+    metadata_path = output_dir.parent / "metadata.jsonl"
     metadata_path.parent.mkdir(parents=True, exist_ok=True)
     with metadata_path.open("w", encoding="utf-8") as handle:
         for row in metadata_rows:

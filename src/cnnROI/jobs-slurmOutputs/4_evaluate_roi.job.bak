@@ -1,0 +1,67 @@
+#!/bin/bash
+
+#SBATCH --partition=rome
+#SBATCH --job-name=evaluate_roi_cnnROI
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=8
+#SBATCH --time=02:00:00
+#SBATCH --output=/gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/src/cnnROI/jobs-slurmOutputs/slurm_evaluate_roi_%A.out
+
+# Evaluates cnnROI refined masks against PENGWIN GT (Dice, IoU, HD95, ASSD).
+# Also computes a delta CSV vs the MedSAM baseline (data/medsam-predictions/evaluation_pengwin.csv).
+# Requires 2_infer_roi.job to have completed.
+# The MedSAM baseline CSV (job 3 from cnnNoROI) does not need to be re-run.
+#
+# Outputs:
+#   data/roi-predictions/evaluation_roi.csv      per-fragment metrics
+#   data/roi-predictions/evaluation_delta.csv    cnnROI - MedSAM delta per fragment
+
+set -euo pipefail
+
+module purge
+module load 2024
+module load Anaconda3/2024.06-1
+
+source /sw/arch/RHEL9/EB_production/2024/software/Anaconda3/2024.06-1/etc/profile.d/conda.sh
+conda activate MoE
+
+cd /gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg
+
+echo "========================================"
+echo "job id  : ${SLURM_JOB_ID}"
+echo "host    : $(hostname)"
+echo "start   : $(date)"
+echo "========================================"
+
+# Step 1 — evaluate cnnROI predictions (full metrics including HD95 and ASSD)
+python evaluation/evaluate_moe_pengwin.py \
+    --pred-mask-root  data/roi-predictions/binary_masks \
+    --output-csv      data/roi-predictions/evaluation_roi.csv \
+    --medsam-csv      data/medsam-predictions/evaluation_pengwin.csv \
+    --delta-csv       data/roi-predictions/evaluation_delta.csv \
+    --num-workers 8 \
+    --delta
+
+# Step 2 — print clean per-class / per-size summary for cnnROI
+echo ""
+echo "=== cnnROI evaluation summary ==="
+python evaluation/summarize_eval_csv.py \
+    data/roi-predictions/evaluation_roi.csv
+
+# Step 3 — print cnnNoROI summary for direct comparison
+echo ""
+echo "=== cnnNoROI evaluation summary (for comparison) ==="
+python evaluation/summarize_eval_csv.py \
+    data/moe-predictions/evaluation_moe.csv 2>/dev/null || \
+    echo "cnnNoROI CSV not found — run cnnNoROI evaluate job first."
+
+# Step 4 — print MedSAM baseline
+echo ""
+echo "=== MedSAM baseline summary ==="
+python evaluation/summarize_eval_csv.py \
+    data/medsam-predictions/evaluation_pengwin.csv 2>/dev/null || \
+    echo "MedSAM baseline CSV not found."
+
+echo "========================================"
+echo "end : $(date)"
+echo "========================================"

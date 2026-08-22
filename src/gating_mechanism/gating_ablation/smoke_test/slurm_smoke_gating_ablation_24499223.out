@@ -1,0 +1,90 @@
+============================================================================================== 
+Warning! Mixing Conda and module environments may lead to corruption of the
+user environment. 
+We do not recommend users mixing those two environments unless absolutely
+necessary. Note that 
+SURF does not provide any support for Conda environment.
+For more information, please refer to our software policy page:
+https://servicedesk.surf.nl/wiki/display/WIKI/Software+policy+Snellius#SoftwarepolicySnellius-UseofAnacondaandMinicondaenvironmentsonSnellius 
+
+Remember that many packages have already been installed on the system and can
+be loaded using 
+the 'module load <package__name>' command. If you are uncertain if a package is
+already available 
+on the system, please use 'module avail' or 'module spider' to search for it.
+============================================================================================== 
+========================================
+job id  : 24499223
+host    : gcn7.local.snellius.surf.nl
+start   : Wed Jul  8 09:03:44 CEST 2026
+gpu     : NVIDIA A100-SXM4-40GB, 40960 MiB
+python  : /home/aramautar2/.conda/envs/MoE/bin/python
+========================================
+
+--- Step 1a: smoke gating CSVs, --routing area --threshold 5402 ---
+[train]:   0%|          | 0/5 [00:00<?, ?case/s][train]: 100%|██████████| 5/5 [00:00<00:00, 58.38case/s]
+Saved 20 train fragments -> src/gating_mechanism/gating_ablation/smoke_test/gating_csvs_area/gated_train_records.csv
+expert
+expert_large    20
+[train] total=20  expert_small=0 (0.00%)  expert_large=20 (100.00%)
+[val]:   0%|          | 0/5 [00:00<?, ?case/s][val]: 100%|██████████| 5/5 [00:00<00:00, 63.48case/s]
+Saved 20 val fragments -> src/gating_mechanism/gating_ablation/smoke_test/gating_csvs_area/gated_val_records.csv
+expert
+expert_large    20
+[val] total=20  expert_small=0 (0.00%)  expert_large=20 (100.00%)
+[test]:   0%|          | 0/5 [00:00<?, ?case/s][test]: 100%|██████████| 5/5 [00:00<00:00, 67.18case/s]
+Saved 19 test fragments -> src/gating_mechanism/gating_ablation/smoke_test/gating_csvs_area/gated_test_records.csv
+expert
+expert_large    19
+[test] total=19  expert_small=0 (0.00%)  expert_large=19 (100.00%)
+
+Routing split summary (all splits):
+split        total   small_n   small_%   large_n   large_%
+----------------------------------------------------------
+train           20         0     0.00%        20   100.00%
+val             20         0     0.00%        20   100.00%
+test            19         0     0.00%        19   100.00%
+
+
+--- Step 1b: smoke gating CSVs, --routing random --seed 42 ---
+[train]:   0%|          | 0/5 [00:00<?, ?case/s][train]: 100%|██████████| 5/5 [00:00<00:00, 68.87case/s]
+Saved 20 train fragments -> src/gating_mechanism/gating_ablation/smoke_test/gating_csvs_random/gated_train_records.csv
+expert
+expert_large    20
+[train] total=20  expert_small=0 (0.00%)  expert_large=20 (100.00%)
+[val]:   0%|          | 0/5 [00:00<?, ?case/s][val]: 100%|██████████| 5/5 [00:00<00:00, 70.27case/s]
+Saved 20 val fragments -> src/gating_mechanism/gating_ablation/smoke_test/gating_csvs_random/gated_val_records.csv
+expert
+expert_large    20
+[val] total=20  expert_small=0 (0.00%)  expert_large=20 (100.00%)
+[test]:   0%|          | 0/5 [00:00<?, ?case/s][test]: 100%|██████████| 5/5 [00:00<00:00, 73.70case/s]
+Saved 19 test fragments -> src/gating_mechanism/gating_ablation/smoke_test/gating_csvs_random/gated_test_records.csv
+expert
+expert_large    19
+[test] total=19  expert_small=0 (0.00%)  expert_large=19 (100.00%)
+
+Routing split summary (all splits):
+split        total   small_n   small_%   large_n   large_%
+----------------------------------------------------------
+train           20         0     0.00%        20   100.00%
+val             20         0     0.00%        20   100.00%
+test            19         0     0.00%        19   100.00%
+
+
+--- Step 2: verify cnnROI train_roi.py starts with --gating-csv-dir (expert_large, 1 epoch) ---
+device: cuda  roi_size=64  roi_pad=64
+Building dataloaders …
+  gating csv dir: src/gating_mechanism/gating_ablation/smoke_test/gating_csvs_area
+[train] expert_small: 0 fragments
+Traceback (most recent call last):
+  File "/gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/src/cnnROI/train_roi.py", line 420, in <module>
+    main()
+  File "/gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/src/cnnROI/train_roi.py", line 394, in main
+    train_loaders = build_expert_dataloaders(
+  File "/gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/src/gating_mechanism/dataset.py", line 93, in build_expert_dataloaders
+    loaders[expert] = DataLoader(
+  File "/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 351, in __init__
+    sampler = RandomSampler(dataset, generator=generator)  # type: ignore[arg-type]
+  File "/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/torch/utils/data/sampler.py", line 107, in __init__
+    raise ValueError("num_samples should be a positive integer "
+ValueError: num_samples should be a positive integer value, but got num_samples=0

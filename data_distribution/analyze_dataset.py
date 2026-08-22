@@ -9,7 +9,9 @@ This script assumes the README pipeline outputs already exist:
 from __future__ import annotations
 
 import argparse
+import functools
 import json
+import multiprocessing as mp
 import os
 import tempfile
 from collections import Counter
@@ -132,6 +134,17 @@ def parse_args() -> argparse.Namespace:
         type=int,
         default=None,
         help="Optional number of image records to process for a quick smoke test.",
+    )
+    parser.add_argument(
+        "--workers",
+        type=int,
+        default=1,
+        help="Parallel worker processes for MedSAM mask feature extraction (mask-source=medsam only).",
+    )
+    parser.add_argument(
+        "--resume",
+        action="store_true",
+        help="Resume MedSAM feature extraction from the checkpoint file in output-root, if present.",
     )
 
     args = parser.parse_args()
@@ -293,42 +306,111 @@ def fragment_from_prediction(record: dict, mask_index: int) -> dict:
     return fragment
 
 
+def _extract_masks_for_record(
+    record: dict,
+    pred_mask_root: Path,
+    include_medsam: bool,
+) -> tuple[str, list[dict]]:
+    """Compute feature rows for every mask in one record. Runs in worker processes."""
+    sample_name = record.get("sample_name")
+    mask_path = mask_path_for_record(record, pred_mask_root)
+    if not mask_path.exists():
+        return sample_name, []
+    masks = np.load(mask_path)["masks"]
+
+    rows: list[dict] = []
+    for mask_index, mask in enumerate(masks):
+        fragment = fragment_from_prediction(record, mask_index)
+        image_shape = mask.shape[:2]
+        row = base_row(record, image_shape, fragment, "medsam")
+        row["mask_path"] = str(mask_path)
+        row.update(extract_mask_features(mask.astype(np.uint8), image_shape))
+
+        label_path = Path(str(row.get("label_path", "")))
+        if include_medsam and label_path.exists():
+            gt = decode_single_fragment(
+                label_path,
+                int(row["category_id"]),
+                int(row["fragment_id"]),
+            )
+            if gt.shape != mask.shape:
+                gt = transform.resize(
+                    gt,
+                    mask.shape,
+                    order=0,
+                    preserve_range=True,
+                    anti_aliasing=False,
+                ).astype(np.uint8)
+            row["medsam_dice"] = dice_score(mask, gt)
+        rows.append(row)
+
+    return sample_name, rows
+
+
 def extract_medsam_features(
     records: list[dict],
     pred_mask_root: Path,
     include_medsam: bool,
+    workers: int = 1,
+    resume: bool = False,
+    checkpoint_path: Path | None = None,
 ) -> pd.DataFrame:
     rows: list[dict] = []
-    for record in tqdm(records, desc="Extracting MedSAM mask features"):
-        mask_path = mask_path_for_record(record, pred_mask_root)
-        if not mask_path.exists():
-            continue
-        masks = np.load(mask_path)["masks"]
+    done_samples: set[str] = set()
 
-        for mask_index, mask in enumerate(masks):
-            fragment = fragment_from_prediction(record, mask_index)
-            image_shape = mask.shape[:2]
-            row = base_row(record, image_shape, fragment, "medsam")
-            row["mask_path"] = str(mask_path)
-            row.update(extract_mask_features(mask.astype(np.uint8), image_shape))
+    if checkpoint_path is not None and resume and checkpoint_path.exists():
+        with checkpoint_path.open("r", encoding="utf-8") as handle:
+            for line in handle:
+                line = line.strip()
+                if not line:
+                    continue
+                entry = json.loads(line)
+                done_samples.add(entry["sample_name"])
+                rows.extend(entry["rows"])
+        print(
+            f"Resuming from checkpoint: {len(done_samples)} samples already processed, "
+            f"{len(rows)} rows loaded from {checkpoint_path}"
+        )
 
-            label_path = Path(str(row.get("label_path", "")))
-            if include_medsam and label_path.exists():
-                gt = decode_single_fragment(
-                    label_path,
-                    int(row["category_id"]),
-                    int(row["fragment_id"]),
-                )
-                if gt.shape != mask.shape:
-                    gt = transform.resize(
-                        gt,
-                        mask.shape,
-                        order=0,
-                        preserve_range=True,
-                        anti_aliasing=False,
-                    ).astype(np.uint8)
-                row["medsam_dice"] = dice_score(mask, gt)
-            rows.append(row)
+    pending = [r for r in records if r.get("sample_name") not in done_samples]
+
+    checkpoint_handle = None
+    if checkpoint_path is not None:
+        checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
+        checkpoint_handle = checkpoint_path.open("a", encoding="utf-8")
+
+    def _write_checkpoint(sample_name: str, sample_rows: list[dict]) -> None:
+        if checkpoint_handle is None:
+            return
+        checkpoint_handle.write(
+            json.dumps({"sample_name": sample_name, "rows": sample_rows}, default=str) + "\n"
+        )
+        checkpoint_handle.flush()
+
+    worker = functools.partial(
+        _extract_masks_for_record,
+        pred_mask_root=pred_mask_root,
+        include_medsam=include_medsam,
+    )
+
+    try:
+        if workers > 1 and pending:
+            with mp.Pool(workers) as pool:
+                for sample_name, sample_rows in tqdm(
+                    pool.imap_unordered(worker, pending, chunksize=4),
+                    total=len(pending),
+                    desc="Extracting MedSAM mask features",
+                ):
+                    rows.extend(sample_rows)
+                    _write_checkpoint(sample_name, sample_rows)
+        else:
+            for record in tqdm(pending, desc="Extracting MedSAM mask features"):
+                sample_name, sample_rows = worker(record)
+                rows.extend(sample_rows)
+                _write_checkpoint(sample_name, sample_rows)
+    finally:
+        if checkpoint_handle is not None:
+            checkpoint_handle.close()
 
     return pd.DataFrame(rows)
 
@@ -519,6 +601,9 @@ def main() -> int:
             records=records,
             pred_mask_root=args.pred_mask_root,
             include_medsam=args.include_medsam,
+            workers=args.workers,
+            resume=args.resume,
+            checkpoint_path=args.output_root / "medsam_features_checkpoint.jsonl",
         )
 
     if features.empty:

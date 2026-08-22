@@ -1,0 +1,77 @@
+#!/bin/bash
+
+#SBATCH --partition=rome
+#SBATCH --job-name=recompute_medsam_features
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=9
+#SBATCH --time=04:00:00
+#SBATCH --output=/gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/data_distribution/logs/recompute_medsam_features_%A.out
+
+# Recomputes shape descriptors (area, aspect_ratio, elongation, compactness,
+# connected_components, ...) from the CURRENT MedSAM binary masks.
+#
+# data_distribution_results/data_analysis_medsam/features.csv is dated
+# 2026-05-26 and predates the June-August mask regenerations (see
+# project_pengwin_medsam_data_incident memory) -- it must be refreshed
+# before it's trustworthy input to learned_gating/oracle_route.py or
+# train_classifier.py.
+#
+# CPU-only (skimage.measure over ~50,000 fragments); no GPU needed.
+# Reverted 2026-08-19 to the original single-worker approach on rome (the
+# 32-worker genoa parallel run only reached ~6.4 it/s -- extraction appears
+# filesystem-I/O-bound on reading .npz mask files, not CPU-bound, so more
+# workers didn't scale as expected). --workers is omitted so the script
+# defaults to 1. --time is 4h (not the original 2h): a full single-threaded
+# pass needs ~3h20m end to end at the observed ~4.1 it/s, which the original
+# 2h limit already didn't cover even before this run's extra checkpointed
+# progress is subtracted.
+#
+# Checkpointing/resume is kept regardless of worker count: progress is
+# written incrementally to
+# data_distribution_results/data_analysis_medsam/medsam_features_checkpoint.jsonl,
+# and --resume (always passed below) picks up from there after any
+# timeout/failure instead of starting over.
+#
+# --output-root is passed explicitly: analyze_dataset.py's own default
+# (data_distribution/data_analysis_<source>, next to the script) does NOT
+# match this repo's established output directory below. Without this flag
+# the job silently writes to the wrong place and never touches the real
+# features.csv -- this happened on 2026-08-19 (jobs 25812293/25813788,
+# caught mid-run) and cost ~1900 already-computed rows a relocation, not
+# a redo, only because it was caught quickly.
+#
+# Prerequisite: data/medsam-predictions/embeddings must be the complete
+# 50,000-file set (masks don't depend on embeddings, but both come from the
+# same infer_medsam_base run -- wait for it to finish first regardless).
+#
+# Output:
+#   data_distribution_results/data_analysis_medsam/features.csv
+#   data_distribution_results/data_analysis_medsam/threshold_suggestions.csv
+#   data_distribution_results/data_analysis_medsam/plots/*.png
+
+set -euo pipefail
+
+module purge
+module load 2024
+module load Anaconda3/2024.06-1
+
+source /sw/arch/RHEL9/EB_production/2024/software/Anaconda3/2024.06-1/etc/profile.d/conda.sh
+conda activate MoE
+
+cd /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg
+
+echo "========================================"
+echo "job id  : ${SLURM_JOB_ID}"
+echo "host    : $(hostname)"
+echo "start   : $(date)"
+echo "python  : $(which python)"
+echo "========================================"
+
+python data_distribution/analyze_dataset.py \
+    --mask-source medsam \
+    --output-root data_distribution_results/data_analysis_medsam \
+    --resume
+
+echo "========================================"
+echo "end : $(date)"
+echo "========================================"

@@ -137,6 +137,15 @@ def parse_args() -> argparse.Namespace:
                         help="Must match the value used during training.")
     parser.add_argument("--roi-pad",        type=int, default=ROI_PAD,
                         help="Must match the value used during training.")
+    parser.add_argument(
+        "--gating-csv-dir", type=Path, default=None,
+        help=(
+            "Directory containing gated_{split}_records.csv. Defaults to "
+            "src/gating_mechanism/ (the canonical 5402-threshold area routing). "
+            "Must match the gating CSV used for the checkpoints in "
+            "--checkpoint-dir (i.e. the same routing ablation arm)."
+        ),
+    )
     parser.add_argument("--limit",          type=int, default=None,
                         help="Process at most N images (smoke test).")
     return parser.parse_args()
@@ -158,9 +167,11 @@ def main() -> None:
         experts[expert_id] = load_expert(ckpt_path, device)
         print(f"Loaded {expert_id} from {ckpt_path}")
 
-    csv_path = GATING_DIR / f"gated_{args.split}_records.csv"
+    gating_csv_dir = args.gating_csv_dir or GATING_DIR
+    csv_path = gating_csv_dir / f"gated_{args.split}_records.csv"
     if not csv_path.exists():
         raise FileNotFoundError(f"Gated CSV not found: {csv_path}")
+    print(f"gating csv dir: {gating_csv_dir}")
 
     df = pd.read_csv(csv_path)
     args.output_dir.mkdir(parents=True, exist_ok=True)

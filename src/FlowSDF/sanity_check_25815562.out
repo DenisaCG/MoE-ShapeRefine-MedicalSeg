@@ -1,0 +1,187 @@
+============================================================================================== 
+Warning! Mixing Conda and module environments may lead to corruption of the
+user environment. 
+We do not recommend users mixing those two environments unless absolutely
+necessary. Note that 
+SURF does not provide any support for Conda environment.
+For more information, please refer to our software policy page:
+https://servicedesk.surf.nl/wiki/display/WIKI/Software+policy+Snellius#SoftwarepolicySnellius-UseofAnacondaandMinicondaenvironmentsonSnellius 
+
+Remember that many packages have already been installed on the system and can
+be loaded using 
+the 'module load <package__name>' command. If you are uncertain if a package is
+already available 
+on the system, please use 'module avail' or 'module spider' to search for it.
+============================================================================================== 
+========================================
+job id  : 25815562
+host    : gcn22.local.snellius.surf.nl
+start   : Wed Aug 19 15:14:59 CEST 2026
+gpu     : NVIDIA A100-SXM4-40GB, 40960 MiB
+========================================
+
+--- Step 1: FlowSDF MoE inference, 10 test images (single-routed, not oracle) ---
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/torch/_utils.py:776: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+  return self.fget.__get__(instance, owner)()
+device: cuda
+Loaded expert_small_best.pth: state_key=ema_state, img_cond_channels=257, params=160754049
+Loaded expert_large_best.pth: state_key=ema_state, img_cond_channels=257, params=160754049
+gating csv dir: /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/src/gating_mechanism
+Running FlowSDF MoE inference on 10 test images
+FlowSDF MoE inference:   0%|          | 0/10 [00:00<?, ?it/s]/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/torch/nn/modules/conv.py:459: UserWarning: Applied workaround for CuDNN issue, install nvrtc.so (Triggered internally at /opt/conda/conda-bld/pytorch_1682343995026/work/aten/src/ATen/native/cudnn/Conv_v8.cpp:80.)
+  return F.conv2d(input, weight, bias, self.stride,
+FlowSDF MoE inference:  10%|█         | 1/10 [00:01<00:14,  1.56s/it]FlowSDF MoE inference:  20%|██        | 2/10 [00:02<00:08,  1.04s/it]FlowSDF MoE inference:  30%|███       | 3/10 [00:03<00:06,  1.09it/s]FlowSDF MoE inference:  40%|████      | 4/10 [00:03<00:04,  1.30it/s]FlowSDF MoE inference:  50%|█████     | 5/10 [00:04<00:03,  1.35it/s]FlowSDF MoE inference:  60%|██████    | 6/10 [00:04<00:02,  1.41it/s]FlowSDF MoE inference:  70%|███████   | 7/10 [00:05<00:02,  1.41it/s]FlowSDF MoE inference:  80%|████████  | 8/10 [00:06<00:01,  1.37it/s]FlowSDF MoE inference:  90%|█████████ | 9/10 [00:07<00:00,  1.36it/s]FlowSDF MoE inference: 100%|██████████| 10/10 [00:07<00:00,  1.40it/s]FlowSDF MoE inference: 100%|██████████| 10/10 [00:07<00:00,  1.29it/s]
+Done. Masks: /scratch-shared/aramautar2/sanity_check_flowsdf/test/binary_masks
+Metadata: /scratch-shared/aramautar2/sanity_check_flowsdf/test/metadata.jsonl
+
+--- Step 2: evaluate against PENGWIN GT (dice + iou only, + delta vs MedSAM baseline) ---
+prediction metadata: /scratch-local/aramautar2.25815562/tmpz7h721s0.jsonl
+prediction mask root: /scratch-shared/aramautar2/sanity_check_flowsdf/test/binary_masks
+box metadata: /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/data/bounding-boxes-xrays/metadata.jsonl
+output csv: /scratch-shared/aramautar2/sanity_check_flowsdf/evaluation_sanity.csv
+records: 10
+limit: no
+skip boundary: True
+metric space: original
+num workers: 8
+area threshold: 188927.9653145927
+Evaluating predictions:   0%|          | 0/10 [00:00<?, ?it/s]Evaluating predictions:  10%|█         | 1/10 [00:01<00:09,  1.04s/it]Evaluating predictions: 100%|██████████| 10/10 [00:01<00:00,  9.56it/s]
+
+Evaluation summary
+==========================================================================================
+Image records evaluated: 10
+Fragment rows written: 39
+Failed records: 0
+Empty predictions: 0
+Empty GT masks: 0
+Area threshold on 1024 grid: 188927.9653145927
+
+Overall mean metrics:
+group                         n      dice_mean       iou_mean      hd95_mean      assd_mean
+-------------------------------------------------------------------------------------------
+overall                      39         0.8594         0.7619            nan            nan
+
+Per-class mean metrics:
+group                         n      dice_mean       iou_mean      hd95_mean      assd_mean
+-------------------------------------------------------------------------------------------
+SA                            9         0.8017         0.6770            nan            nan
+LI                           20         0.8616         0.7643            nan            nan
+RI                           10         0.9068         0.8335            nan            nan
+
+Per-size mean metrics:
+group                         n      dice_mean       iou_mean      hd95_mean      assd_mean
+-------------------------------------------------------------------------------------------
+small                        19         0.8392         0.7345            nan            nan
+large                        20         0.8786         0.7879            nan            nan
+
+Per-class and per-size mean metrics:
+group                         n      dice_mean       iou_mean      hd95_mean      assd_mean
+-------------------------------------------------------------------------------------------
+SA/small                      5         0.7867         0.6579            nan            nan
+SA/large                      4         0.8205         0.7009            nan            nan
+LI/small                     10         0.8470         0.7466            nan            nan
+LI/large                     10         0.8762         0.7819            nan            nan
+RI/small                      4         0.8853         0.7998            nan            nan
+RI/large                      6         0.9211         0.8560            nan            nan
+==========================================================================================
+
+Saved evaluation CSV: /scratch-shared/aramautar2/sanity_check_flowsdf/evaluation_sanity.csv
+Metadata filter: 10/50000 images have predictions in binary_masks/
+Running: /home/aramautar2/.conda/envs/MoE/bin/python /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/evaluation/evaluate_medsam_pengwin.py --pred-mask-root /scratch-shared/aramautar2/sanity_check_flowsdf/test/binary_masks --pred-metadata /scratch-local/aramautar2.25815562/tmpz7h721s0.jsonl --output-csv /scratch-shared/aramautar2/sanity_check_flowsdf/evaluation_sanity.csv --num-workers 8 --skip-boundary
+
+Delta CSV saved: /scratch-shared/aramautar2/sanity_check_flowsdf/evaluation_sanity_delta.csv
+
+MoE vs MedSAM summary:
+  dice: mean delta = +0.1187  improved = 88.6% of fragments  n = 35
+  iou: mean delta = +0.1666  improved = 88.6% of fragments  n = 35
+
+=== sanity check summary (FlowSDF on fresh embeddings) ===
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/numpy/lib/nanfunctions.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+Evaluation summary
+==========================================================================================
+CSV: /scratch-shared/aramautar2/sanity_check_flowsdf/evaluation_sanity.csv
+Image records evaluated: 10
+Fragment rows written: 39
+Failed records: not stored in CSV
+Empty predictions: 0
+Empty GT masks: 0
+Area threshold on 1024 grid: 188927.9653145927
+
+Overall mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+overall                           39         0.8594         0.7619            nan            nan
+
+Per-class mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+SA                                 9         0.8017         0.6770            nan            nan
+LI                                20         0.8616         0.7643            nan            nan
+RI                                10         0.9068         0.8335            nan            nan
+
+Per-size mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+small                             19         0.8392         0.7345            nan            nan
+large                             20         0.8786         0.7879            nan            nan
+
+Per-class and per-size mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+SA/small                           5         0.7867         0.6579            nan            nan
+SA/large                           4         0.8205         0.7009            nan            nan
+LI/small                          10         0.8470         0.7466            nan            nan
+LI/large                          10         0.8762         0.7819            nan            nan
+RI/small                           4         0.8853         0.7998            nan            nan
+RI/large                           6         0.9211         0.8560            nan            nan
+==========================================================================================
+========================================
+end : Wed Aug 19 15:15:36 CEST 2026
+========================================

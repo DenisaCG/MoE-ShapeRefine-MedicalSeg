@@ -1,0 +1,79 @@
+#!/bin/bash
+
+#SBATCH --partition=staging
+#SBATCH --job-name=watch_oracle_route_race
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=1G
+#SBATCH --time=12:00:00
+#SBATCH --output=/gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/src/gating_mechanism/learned_gating/logs/watch_oracle_route_race_%A.out
+
+# Watches the 3-way partition race for oracle_route_cnnnoroi (gpu_a100 job
+# 25820066, gpu_h100 job 25824368, gpu_mig job 25824369) and cancels the
+# losers as soon as one of gpu_a100/gpu_h100 starts running. If gpu_mig
+# starts first, it's left alone AND gpu_a100/gpu_h100 are left running too
+# (mig's throughput on this workload is unproven, so keep them as a hedge
+# rather than cancelling). Runs as a CPU-only SLURM job (not a login-node
+# process) so it survives independently of any interactive session --
+# it just polls sacct/scancel, no real compute.
+#
+# Result log (persistent, separate from this job's own %A.out so it's easy
+# to tail while the job is still running):
+#   src/gating_mechanism/learned_gating/logs/oracle_route_race_result.log
+
+set -u
+
+declare -A JOBS=(
+  [25820066]=gpu_a100
+  [25824368]=gpu_h100
+  [25824369]=gpu_mig
+)
+
+LOG=/gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/src/gating_mechanism/learned_gating/logs/oracle_route_race_result.log
+
+echo "$(date): watcher job ${SLURM_JOB_ID} started on $(hostname), watching ${!JOBS[@]}" | tee -a "$LOG"
+
+while true; do
+  ANY_LEFT=0
+  for jid in "${!JOBS[@]}"; do
+    ST=$(sacct -j "$jid" -o State -X -n 2>/dev/null | head -1 | tr -d ' ')
+    if [ -z "$ST" ]; then
+      continue
+    fi
+    if [ "$ST" = "RUNNING" ]; then
+      WINNER=$jid
+      WINNER_PART=${JOBS[$jid]}
+      if [ "$WINNER_PART" = "gpu_mig" ]; then
+        echo "$(date): job $jid (gpu_mig) started RUNNING -- mig is unproven so leaving gpu_a100/gpu_h100 running as a hedge, not cancelling" | tee -a "$LOG"
+        echo "$(date): winner=$jid partition=$WINNER_PART (hedge kept)" | tee -a "$LOG"
+        exit 0
+      fi
+      echo "$(date): job $jid (${JOBS[$jid]}) started RUNNING -- cancelling the rest" | tee -a "$LOG"
+      for other in "${!JOBS[@]}"; do
+        if [ "$other" != "$jid" ]; then
+          OST=$(sacct -j "$other" -o State -X -n 2>/dev/null | head -1 | tr -d ' ')
+          case "$OST" in
+            PENDING|""|REQUEUED)
+              scancel "$other"
+              echo "$(date): cancelled $other (${JOBS[$other]}), was $OST" | tee -a "$LOG"
+              ;;
+            *)
+              echo "$(date): left $other (${JOBS[$other]}) alone, state=$OST" | tee -a "$LOG"
+              ;;
+          esac
+        fi
+      done
+      echo "$(date): winner=$jid partition=$WINNER_PART" | tee -a "$LOG"
+      exit 0
+    fi
+    case "$ST" in
+      PENDING|REQUEUED) ANY_LEFT=$((ANY_LEFT+1)) ;;
+      *) echo "$(date): job $jid (${JOBS[$jid]}) ended in state $ST before starting" | tee -a "$LOG" ;;
+    esac
+  done
+  if [ "$ANY_LEFT" -eq 0 ]; then
+    echo "$(date): no jobs left pending and none reached RUNNING -- exiting" | tee -a "$LOG"
+    exit 1
+  fi
+  sleep 30
+done

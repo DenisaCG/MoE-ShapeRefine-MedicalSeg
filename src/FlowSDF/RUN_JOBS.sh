@@ -1,8 +1,10 @@
 #!/bin/bash
 
+# bash src/FlowSDF/RUN_JOBS.sh
+
 set -euo pipefail
 
-cd /gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/src/FlowSDF
+cd /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/src/FlowSDF
 
 JOB_DIR="jobs-slurmOutputs"
 
@@ -16,8 +18,12 @@ echo "Submitted evaluation job: ${EVAL_JOB_ID}"
 VIS_JOB_ID=$(sbatch --parsable --dependency=afterok:"${EVAL_JOB_ID}" "${JOB_DIR}/5_visualize_flowsdf.job")
 echo "Submitted visualization job: ${VIS_JOB_ID}"
 
+COMPARE_JOB_ID=$(sbatch --parsable --dependency=afterok:"${VIS_JOB_ID}" "${JOB_DIR}/6_compare_flowsdf_cnn.job")
+echo "Submitted comparison job: ${COMPARE_JOB_ID}"
+
 echo ""
 echo "FlowSDF workflow submitted:"
 echo "  inference     ${INFER_JOB_ID}"
 echo "  evaluation    ${EVAL_JOB_ID}"
 echo "  visualization ${VIS_JOB_ID}"
+echo "  comparison    ${COMPARE_JOB_ID}"

@@ -4,21 +4,25 @@
 #SBATCH --job-name=compare_flowsdf_cnn
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
-#SBATCH --time=00:30:00
-#SBATCH --output=/gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg/src/FlowSDF/jobs-slurmOutputs/slurm_compare_flowsdf_cnn_%A.out
+#SBATCH --time=01:00:00
+#SBATCH --output=/gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/src/FlowSDF/jobs-slurmOutputs/slurm_compare_flowsdf_cnn_%A.out
 
 # Combined visual comparison of cnnNoROI, cnnROI, and FlowSDF.
 # Requires evaluation jobs to have completed:
 #   - cnnNoROI: data/moe-predictions/evaluation_moe.csv
 #   - cnnROI:   data/roi-predictions/evaluation_roi.csv
-#   - FlowSDF:  data/flowsdf-moe-predictions/test/evaluation_flowsdf.csv
+#   - FlowSDF:  data/flowsdf-moe-predictions/test/stepsize_${ODE_STEPS}/csv/evaluation_flowsdf.csv
+#     (2_infer_flowsdf.job and 4_evaluate_flowsdf.job must have been run with the same ODE_STEPS)
 #
-# Outputs:
-#   data/flowsdf-moe-predictions/test/comparisons/*.png
+# Outputs (namespaced by ODE_STEPS so different step counts stay comparable):
+#   data/flowsdf-moe-predictions/test/stepsize_${ODE_STEPS}/comparisons/*.png
 #     6-panel figures: MedSAM | cnnROI | cnnNoROI | FlowSDF | GT | Diff(all methods)
 #   Printed metrics table in this .out file.
 
 set -euo pipefail
+
+ODE_STEPS=40
+RUN_DIR="data/flowsdf-moe-predictions/test/FINAL"
 
 module purge
 module load 2024
@@ -31,24 +35,40 @@ export MPLCONFIGDIR="${TMPDIR:-/tmp}/matplotlib-${SLURM_JOB_ID}"
 export XDG_CACHE_HOME="${TMPDIR:-/tmp}/cache-${SLURM_JOB_ID}"
 mkdir -p "${MPLCONFIGDIR}" "${XDG_CACHE_HOME}"
 
-cd /gpfs/home5/scur0509/projects/MoE-ShapeRefine-MedicalSeg
+cd /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg
 
 echo "========================================"
 echo "job id : ${SLURM_JOB_ID}"
 echo "host   : $(hostname)"
 echo "start  : $(date)"
+echo "ode-steps: ${ODE_STEPS}"
 echo "========================================"
+
+# python evaluation/compare_roi_noroi_pengwin.py \
+#     --flowsdf-csv "data/flowsdf-moe-predictions/test/evaluation_flowsdf.csv" \
+#     --flowsdf-mask-root "data/flowsdf-moe-predictions/test/binary_masks" \
+#     --output-dir "${RUN_DIR}/comparisons" \
+#     --n-roi-wins 5 \
+#     --n-roi-loses 5 \
+#     --n-flowsdf-wins 5 \
+#     --n-flowsdf-loses 5 \
+#     --n-random-small 5 \
+#     --n-random-large 5 \
+#     --no-xray \
+#     --swap-cnn-order
+
 
 python evaluation/compare_roi_noroi_pengwin.py \
     --flowsdf-csv data/flowsdf-moe-predictions/test/evaluation_flowsdf.csv \
     --flowsdf-mask-root data/flowsdf-moe-predictions/test/binary_masks \
-    --output-dir data/flowsdf-moe-predictions/test/comparisons \
-    --n-roi-wins 5 \
-    --n-roi-loses 5 \
-    --n-random-small 5 \
-    --n-random-large 5 \
-    --no-xray \
-    --swap-cnn-order
+    --output-dir data/flowsdf-moe-predictions/test/FINAL/comparisons \
+    --no-xray --swap-cnn-order \
+    --select-images \
+      .../random_large__XRAY_PENGWIN_011_0118__frag000__SA__large__delta+0.272.png \
+      .../random_large__XRAY_PENGWIN_054_0261__frag003__RI__large__delta+0.085.png \
+      .../random_large__XRAY_PENGWIN_074_0456__frag002__LI__large__delta-0.083.png \
+      .../random_large__XRAY_PENGWIN_077_0284__frag004__RI__large__delta+0.215.png \
+      .../random_large__XRAY_PENGWIN_098_0188__frag002__LI__large__delta+0.103.png
 
 echo "========================================"
 echo "end : $(date)"

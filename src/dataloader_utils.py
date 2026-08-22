@@ -34,8 +34,8 @@ CATEGORY_NAMES = {
 def resolve_existing_path(path: str | Path) -> Path:
     """Resolve common Snellius path variants.
 
-    Metadata sometimes stores paths as /gpfs/home5/..., while interactive shells
-    may show /home/... . This helper tries both.
+    Metadata sometimes stores paths as /gpfs/home5/... or /gpfs/home/...,
+    while interactive shells may show /home/... . This helper tries all of them.
     """
     path = Path(path)
 
@@ -46,6 +46,11 @@ def resolve_existing_path(path: str | Path) -> Path:
 
     if text.startswith("/gpfs/home5/"):
         alt = Path(text.replace("/gpfs/home5/", "/home/", 1))
+        if alt.exists():
+            return alt
+
+    if text.startswith("/gpfs/home/"):
+        alt = Path(text.replace("/gpfs/home/", "/gpfs/home5/", 1))
         if alt.exists():
             return alt
 

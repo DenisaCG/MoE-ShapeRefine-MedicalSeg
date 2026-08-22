@@ -1,0 +1,27 @@
+============================================================================================== 
+Warning! Mixing Conda and module environments may lead to corruption of the
+user environment. 
+We do not recommend users mixing those two environments unless absolutely
+necessary. Note that 
+SURF does not provide any support for Conda environment.
+For more information, please refer to our software policy page:
+https://servicedesk.surf.nl/wiki/display/WIKI/Software+policy+Snellius#SoftwarepolicySnellius-UseofAnacondaandMinicondaenvironmentsonSnellius 
+
+Remember that many packages have already been installed on the system and can
+be loaded using 
+the 'module load <package__name>' command. If you are uncertain if a package is
+already available 
+on the system, please use 'module avail' or 'module spider' to search for it.
+============================================================================================== 
+========================================
+job id  : 24345400
+host    : gcn101.local.snellius.surf.nl
+start   : Wed Jul  1 14:05:42 CEST 2026
+gpu     : NVIDIA H100, 95830 MiB
+========================================
+Traceback (most recent call last):
+  File "/gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/src/run_medsam_with_pengwin_boxes.py", line 38, in <module>
+    import torch
+  File "/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/torch/__init__.py", line 229, in <module>
+    from torch._C import *  # noqa: F403
+ImportError: /home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/torch/lib/libtorch_cpu.so: undefined symbol: iJIT_NotifyEvent

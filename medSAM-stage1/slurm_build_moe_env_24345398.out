@@ -1,0 +1,173 @@
+============================================================================================== 
+Warning! Mixing Conda and module environments may lead to corruption of the
+user environment. 
+We do not recommend users mixing those two environments unless absolutely
+necessary. Note that 
+SURF does not provide any support for Conda environment.
+For more information, please refer to our software policy page:
+https://servicedesk.surf.nl/wiki/display/WIKI/Software+policy+Snellius#SoftwarepolicySnellius-UseofAnacondaandMinicondaenvironmentsonSnellius 
+
+Remember that many packages have already been installed on the system and can
+be loaded using 
+the 'module load <package__name>' command. If you are uncertain if a package is
+already available 
+on the system, please use 'module avail' or 'module spider' to search for it.
+============================================================================================== 
+job id  : 24345398
+host    : tcn409.local.snellius.surf.nl
+start   : Wed Jul  1 13:47:41 CEST 2026
+Channels:
+ - pytorch
+ - nvidia
+ - conda-forge
+ - defaults
+Platform: linux-64
+Collecting package metadata (repodata.json): ...working... done
+Solving environment: ...working... done
+
+Downloading and Extracting Packages: ...working... done
+Preparing transaction: ...working... done
+Verifying transaction: ...working... done
+Executing transaction: ...working... done
+Installing pip dependencies: ...working... Ran pip subprocess with arguments:
+['/home/aramautar2/.conda/envs/MoE/bin/python', '-m', 'pip', 'install', '-U', '-r', '/gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt', '--exists-action=b']
+Pip subprocess output:
+Collecting segment-anything (from -r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 1))
+  Downloading segment_anything-1.0-py3-none-any.whl.metadata (487 bytes)
+Collecting transformers<4.45,>=4.35 (from -r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 2))
+  Downloading transformers-4.44.2-py3-none-any.whl.metadata (43 kB)
+Collecting datasets (from -r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 3))
+  Downloading datasets-5.0.0-py3-none-any.whl.metadata (23 kB)
+Collecting accelerate (from -r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 4))
+  Downloading accelerate-1.14.0-py3-none-any.whl.metadata (19 kB)
+Requirement already satisfied: filelock in /gpfs/home5/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages (from transformers<4.45,>=4.35->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 2)) (3.29.4)
+Collecting huggingface-hub<1.0,>=0.23.2 (from transformers<4.45,>=4.35->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 2))
+  Downloading huggingface_hub-0.36.2-py3-none-any.whl.metadata (15 kB)
+Requirement already satisfied: numpy>=1.17 in /gpfs/home5/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages (from transformers<4.45,>=4.35->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 2)) (1.26.4)
+Requirement already satisfied: packaging>=20.0 in /gpfs/home5/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages (from transformers<4.45,>=4.35->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 2)) (26.2)
+Requirement already satisfied: pyyaml>=5.1 in /gpfs/home5/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages (from transformers<4.45,>=4.35->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 2)) (6.0.3)
+Collecting regex!=2019.12.17 (from transformers<4.45,>=4.35->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 2))
+  Downloading regex-2026.6.28-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (40 kB)
+Requirement already satisfied: requests in /gpfs/home5/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages (from transformers<4.45,>=4.35->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 2)) (2.34.2)
+Collecting safetensors>=0.4.1 (from transformers<4.45,>=4.35->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 2))
+  Downloading safetensors-0.8.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.2 kB)
+Collecting tokenizers<0.20,>=0.19 (from transformers<4.45,>=4.35->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 2))
+  Downloading tokenizers-0.19.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.7 kB)
+Requirement already satisfied: tqdm>=4.27 in /gpfs/home5/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages (from transformers<4.45,>=4.35->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 2)) (4.68.3)
+Collecting fsspec>=2023.5.0 (from huggingface-hub<1.0,>=0.23.2->transformers<4.45,>=4.35->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 2))
+  Downloading fsspec-2026.6.0-py3-none-any.whl.metadata (10 kB)
+Collecting hf-xet<2.0.0,>=1.1.3 (from huggingface-hub<1.0,>=0.23.2->transformers<4.45,>=4.35->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 2))
+  Downloading hf_xet-1.5.1-cp37-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (4.9 kB)
+Requirement already satisfied: typing-extensions>=3.7.4.3 in /gpfs/home5/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages (from huggingface-hub<1.0,>=0.23.2->transformers<4.45,>=4.35->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 2)) (4.15.0)
+Collecting pyarrow>=21.0.0 (from datasets->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 3))
+  Downloading pyarrow-24.0.0-cp310-cp310-manylinux_2_28_x86_64.whl.metadata (3.0 kB)
+Collecting dill<0.4.2,>=0.3.0 (from datasets->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 3))
+  Downloading dill-0.4.1-py3-none-any.whl.metadata (10 kB)
+Requirement already satisfied: pandas in /gpfs/home5/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages (from datasets->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 3)) (2.3.3)
+Collecting httpx<1.0.0 (from datasets->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 3))
+  Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+Collecting xxhash (from datasets->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 3))
+  Downloading xxhash-3.8.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (14 kB)
+Collecting multiprocess<0.70.20 (from datasets->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 3))
+  Downloading multiprocess-0.70.19-py310-none-any.whl.metadata (7.5 kB)
+Collecting fsspec>=2023.5.0 (from huggingface-hub<1.0,>=0.23.2->transformers<4.45,>=4.35->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 2))
+  Downloading fsspec-2026.4.0-py3-none-any.whl.metadata (10 kB)
+Collecting aiohttp!=4.0.0a0,!=4.0.0a1 (from fsspec[http]<=2026.4.0,>=2023.1.0->datasets->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 3))
+  Downloading aiohttp-3.14.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (8.3 kB)
+Collecting anyio (from httpx<1.0.0->datasets->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 3))
+  Downloading anyio-4.14.1-py3-none-any.whl.metadata (4.6 kB)
+Requirement already satisfied: certifi in /gpfs/home5/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages (from httpx<1.0.0->datasets->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 3)) (2026.6.17)
+Collecting httpcore==1.* (from httpx<1.0.0->datasets->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 3))
+  Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+Requirement already satisfied: idna in /gpfs/home5/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages (from httpx<1.0.0->datasets->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 3)) (3.18)
+Collecting h11>=0.16 (from httpcore==1.*->httpx<1.0.0->datasets->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 3))
+  Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+Collecting psutil (from accelerate->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 4))
+  Downloading psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl.metadata (22 kB)
+Requirement already satisfied: torch>=2.0.0 in /gpfs/home5/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages (from accelerate->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 4)) (2.0.1)
+Collecting aiohappyeyeballs>=2.5.0 (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2026.4.0,>=2023.1.0->datasets->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 3))
+  Downloading aiohappyeyeballs-2.6.2-py3-none-any.whl.metadata (5.9 kB)
+Collecting aiosignal>=1.4.0 (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2026.4.0,>=2023.1.0->datasets->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 3))
+  Downloading aiosignal-1.4.0-py3-none-any.whl.metadata (3.7 kB)
+Collecting async-timeout<6.0,>=4.0 (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2026.4.0,>=2023.1.0->datasets->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 3))
+  Downloading async_timeout-5.0.1-py3-none-any.whl.metadata (5.1 kB)
+Collecting attrs>=17.3.0 (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2026.4.0,>=2023.1.0->datasets->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 3))
+  Downloading attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+Collecting frozenlist>=1.1.1 (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2026.4.0,>=2023.1.0->datasets->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 3))
+  Downloading frozenlist-1.8.0-cp310-cp310-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (20 kB)
+Collecting multidict<7.0,>=4.5 (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2026.4.0,>=2023.1.0->datasets->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 3))
+  Downloading multidict-6.7.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (5.3 kB)
+Collecting propcache>=0.2.0 (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2026.4.0,>=2023.1.0->datasets->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 3))
+  Downloading propcache-0.5.2-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (16 kB)
+Collecting yarl<2.0,>=1.17.0 (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2026.4.0,>=2023.1.0->datasets->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 3))
+  Downloading yarl-1.24.2-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (94 kB)
+Requirement already satisfied: charset_normalizer<4,>=2 in /gpfs/home5/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages (from requests->transformers<4.45,>=4.35->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 2)) (3.4.7)
+Requirement already satisfied: urllib3<3,>=1.26 in /gpfs/home5/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages (from requests->transformers<4.45,>=4.35->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 2)) (2.7.0)
+Requirement already satisfied: sympy in /gpfs/home5/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages (from torch>=2.0.0->accelerate->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 4)) (1.14.0)
+Requirement already satisfied: networkx in /gpfs/home5/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages (from torch>=2.0.0->accelerate->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 4)) (3.4.2)
+Requirement already satisfied: jinja2 in /gpfs/home5/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages (from torch>=2.0.0->accelerate->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 4)) (3.1.6)
+Collecting exceptiongroup>=1.0.2 (from anyio->httpx<1.0.0->datasets->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 3))
+  Downloading exceptiongroup-1.3.1-py3-none-any.whl.metadata (6.7 kB)
+Requirement already satisfied: MarkupSafe>=2.0 in /gpfs/home5/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages (from jinja2->torch>=2.0.0->accelerate->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 4)) (3.0.3)
+Requirement already satisfied: python-dateutil>=2.8.2 in /gpfs/home5/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages (from pandas->datasets->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 3)) (2.9.0.post0)
+Requirement already satisfied: pytz>=2020.1 in /gpfs/home5/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages (from pandas->datasets->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 3)) (2026.2)
+Requirement already satisfied: tzdata>=2022.7 in /gpfs/home5/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages (from pandas->datasets->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 3)) (2026.2)
+Requirement already satisfied: six>=1.5 in /gpfs/home5/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages (from python-dateutil>=2.8.2->pandas->datasets->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 3)) (1.17.0)
+Requirement already satisfied: mpmath<1.5,>=1.1.0 in /gpfs/home5/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages (from sympy->torch>=2.0.0->accelerate->-r /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/condaenv.74r5d5il.requirements.txt (line 4)) (1.4.1)
+Downloading transformers-4.44.2-py3-none-any.whl (9.5 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.5/9.5 MB 118.7 MB/s  0:00:00
+Downloading huggingface_hub-0.36.2-py3-none-any.whl (566 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 566.4/566.4 kB 41.4 MB/s  0:00:00
+Downloading hf_xet-1.5.1-cp37-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (4.5 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.5/4.5 MB 163.1 MB/s  0:00:00
+Downloading tokenizers-0.19.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.6 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.6/3.6 MB 88.4 MB/s  0:00:00
+Downloading segment_anything-1.0-py3-none-any.whl (36 kB)
+Downloading datasets-5.0.0-py3-none-any.whl (555 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 555.1/555.1 kB 44.3 MB/s  0:00:00
+Downloading dill-0.4.1-py3-none-any.whl (120 kB)
+Downloading fsspec-2026.4.0-py3-none-any.whl (203 kB)
+Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+Downloading multiprocess-0.70.19-py310-none-any.whl (134 kB)
+Downloading accelerate-1.14.0-py3-none-any.whl (389 kB)
+Downloading aiohttp-3.14.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (1.7 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.7/1.7 MB 110.6 MB/s  0:00:00
+Downloading async_timeout-5.0.1-py3-none-any.whl (6.2 kB)
+Downloading multidict-6.7.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (243 kB)
+Downloading yarl-1.24.2-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (106 kB)
+Downloading aiohappyeyeballs-2.6.2-py3-none-any.whl (15 kB)
+Downloading aiosignal-1.4.0-py3-none-any.whl (7.5 kB)
+Downloading attrs-26.1.0-py3-none-any.whl (67 kB)
+Downloading frozenlist-1.8.0-cp310-cp310-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (219 kB)
+Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+Downloading propcache-0.5.2-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (60 kB)
+Downloading pyarrow-24.0.0-cp310-cp310-manylinux_2_28_x86_64.whl (48.8 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 48.8/48.8 MB 112.7 MB/s  0:00:00
+Downloading regex-2026.6.28-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (794 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 794.1/794.1 kB 72.3 MB/s  0:00:00
+Downloading safetensors-0.8.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (516 kB)
+Downloading anyio-4.14.1-py3-none-any.whl (124 kB)
+Downloading exceptiongroup-1.3.1-py3-none-any.whl (16 kB)
+Downloading psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl (155 kB)
+Downloading xxhash-3.8.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (217 kB)
+Installing collected packages: segment-anything, xxhash, safetensors, regex, pyarrow, psutil, propcache, multidict, hf-xet, h11, fsspec, frozenlist, exceptiongroup, dill, attrs, async-timeout, aiohappyeyeballs, yarl, multiprocess, huggingface-hub, httpcore, anyio, aiosignal, tokenizers, httpx, aiohttp, accelerate, transformers, datasets
+
+Successfully installed accelerate-1.14.0 aiohappyeyeballs-2.6.2 aiohttp-3.14.1 aiosignal-1.4.0 anyio-4.14.1 async-timeout-5.0.1 attrs-26.1.0 datasets-5.0.0 dill-0.4.1 exceptiongroup-1.3.1 frozenlist-1.8.0 fsspec-2026.4.0 h11-0.16.0 hf-xet-1.5.1 httpcore-1.0.9 httpx-0.28.1 huggingface-hub-0.36.2 multidict-6.7.1 multiprocess-0.70.19 propcache-0.5.2 psutil-7.2.2 pyarrow-24.0.0 regex-2026.6.28 safetensors-0.8.0 segment-anything-1.0 tokenizers-0.19.1 transformers-4.44.2 xxhash-3.8.0 yarl-1.24.2
+
+done
+#
+# To activate this environment, use
+#
+#     $ conda activate MoE
+#
+# To deactivate an active environment, use
+#
+#     $ conda deactivate
+
+end : Wed Jul  1 14:05:11 CEST 2026
+# conda environments:
+#
+MoE                      /home/aramautar2/.conda/envs/MoE
+base                     /sw/arch/RHEL9/EB_production/2024/software/Anaconda3/2024.06-1
+

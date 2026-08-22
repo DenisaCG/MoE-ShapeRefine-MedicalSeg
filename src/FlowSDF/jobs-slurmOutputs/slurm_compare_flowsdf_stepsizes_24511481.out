@@ -1,0 +1,108 @@
+============================================================================================== 
+Warning! Mixing Conda and module environments may lead to corruption of the
+user environment. 
+We do not recommend users mixing those two environments unless absolutely
+necessary. Note that 
+SURF does not provide any support for Conda environment.
+For more information, please refer to our software policy page:
+https://servicedesk.surf.nl/wiki/display/WIKI/Software+policy+Snellius#SoftwarepolicySnellius-UseofAnacondaandMinicondaenvironmentsonSnellius 
+
+Remember that many packages have already been installed on the system and can
+be loaded using 
+the 'module load <package__name>' command. If you are uncertain if a package is
+already available 
+on the system, please use 'module avail' or 'module spider' to search for it.
+============================================================================================== 
+========================================
+job id : 24511481
+host   : tcn148.local.snellius.surf.nl
+start  : Wed Jul  8 16:46:32 CEST 2026
+python : /home/aramautar2/.conda/envs/MoE/bin/python
+========================================
+Loading evaluation CSVs …
+  26457 matched fragments across stepsize_10 / stepsize_40 / stepsize_60
+
+=== FlowSDF stepsize_10 vs stepsize_40 vs stepsize_60 — per-group comparison ===
+group                 n    dice_10    dice_40    dice_60    hd95_10    hd95_40    hd95_60    wins(10/40/60)
+-----------------------------------------------------------------------------------------------------------
+overall           26457     0.6850     0.6815     0.6809     48.445     48.864     48.902   18965/3779/3713
+small             13228     0.6434     0.6398     0.6391     29.218     29.349     29.355    8878/2441/1909
+large             13229     0.7267     0.7232     0.7228     67.322     68.050     68.127   10087/1338/1804
+LI                 9808     0.6791     0.6755     0.6749     47.679     48.054     48.083    6968/1418/1422
+RI                 9566     0.6829     0.6789     0.6783     48.170     48.706     48.771    7033/1292/1241
+SA                 7083     0.6961     0.6933     0.6928     49.871     50.192     50.207    4964/1069/1050
+
+
+=== VERDICT: which ODE step count performs best? ===
+Matched fragments compared: 26457
+
+Mean Dice:  stepsize_10=0.6850   stepsize_40=0.6815   stepsize_60=0.6809
+Mean HD95:  stepsize_10=48.445   stepsize_40=48.864   stepsize_60=48.902
+Per-fragment Dice win counts: stepsize_10=18965 (71.7%)   stepsize_40=3779 (14.3%)   stepsize_60=3713 (14.0%)
+
+Best mean Dice: stepsize_10 (margin over runner-up: +0.0035)
+Most per-fragment wins: stepsize_10
+
+OVERALL RECOMMENDATION: stepsize_10 (clear win by both mean Dice and per-fragment win count)
+======================================================================
+
+Saved merged per-fragment CSV: data/flowsdf-moe-predictions/test/stepsize_comparison/csv/stepsize_comparison_merged.csv
+Saved verdict: data/flowsdf-moe-predictions/test/stepsize_comparison/verdict.txt
+Building X-ray image map …
+Selected 25 fragments — generating figures …
+
+[max_disagreement] XRAY_PENGWIN_073_0152
+  saved: max_disagreement__XRAY_PENGWIN_073_0152__frag002__RI__small__spread0.632.png
+[max_disagreement] XRAY_PENGWIN_025_0331
+  saved: max_disagreement__XRAY_PENGWIN_025_0331__frag006__RI__small__spread0.615.png
+[max_disagreement] XRAY_PENGWIN_029_0452
+  saved: max_disagreement__XRAY_PENGWIN_029_0452__frag001__SA__small__spread0.567.png
+[max_disagreement] XRAY_PENGWIN_041_0269
+  saved: max_disagreement__XRAY_PENGWIN_041_0269__frag002__LI__small__spread0.469.png
+[max_disagreement] XRAY_PENGWIN_057_0140
+  saved: max_disagreement__XRAY_PENGWIN_057_0140__frag003__LI__small__spread0.457.png
+[winner_best] XRAY_PENGWIN_031_0414
+  saved: winner_best__XRAY_PENGWIN_031_0414__frag001__SA__small__spread0.379.png
+[winner_best] XRAY_PENGWIN_008_0164
+  saved: winner_best__XRAY_PENGWIN_008_0164__frag003__LI__large__spread0.339.png
+[winner_best] XRAY_PENGWIN_088_0287
+  saved: winner_best__XRAY_PENGWIN_088_0287__frag001__LI__small__spread0.273.png
+[winner_best] XRAY_PENGWIN_021_0154
+  saved: winner_best__XRAY_PENGWIN_021_0154__frag003__LI__small__spread0.265.png
+[winner_best] XRAY_PENGWIN_031_0256
+  saved: winner_best__XRAY_PENGWIN_031_0256__frag007__RI__small__spread0.213.png
+[winner_worst] XRAY_PENGWIN_073_0152
+  saved: winner_worst__XRAY_PENGWIN_073_0152__frag002__RI__small__spread0.632.png
+[winner_worst] XRAY_PENGWIN_025_0331
+  saved: winner_worst__XRAY_PENGWIN_025_0331__frag006__RI__small__spread0.615.png
+[winner_worst] XRAY_PENGWIN_029_0452
+  saved: winner_worst__XRAY_PENGWIN_029_0452__frag001__SA__small__spread0.567.png
+[winner_worst] XRAY_PENGWIN_041_0269
+  saved: winner_worst__XRAY_PENGWIN_041_0269__frag002__LI__small__spread0.469.png
+[winner_worst] XRAY_PENGWIN_057_0140
+  saved: winner_worst__XRAY_PENGWIN_057_0140__frag003__LI__small__spread0.457.png
+[random_small] XRAY_PENGWIN_079_0277
+  saved: random_small__XRAY_PENGWIN_079_0277__frag003__RI__small__spread0.012.png
+[random_small] XRAY_PENGWIN_045_0340
+  saved: random_small__XRAY_PENGWIN_045_0340__frag001__SA__small__spread0.078.png
+[random_small] XRAY_PENGWIN_066_0424
+  saved: random_small__XRAY_PENGWIN_066_0424__frag004__LI__small__spread0.096.png
+[random_small] XRAY_PENGWIN_009_0332
+  saved: random_small__XRAY_PENGWIN_009_0332__frag003__RI__small__spread0.033.png
+[random_small] XRAY_PENGWIN_045_0140
+  saved: random_small__XRAY_PENGWIN_045_0140__frag001__SA__small__spread0.001.png
+[random_large] XRAY_PENGWIN_098_0197
+  saved: random_large__XRAY_PENGWIN_098_0197__frag003__RI__large__spread0.002.png
+[random_large] XRAY_PENGWIN_011_0118
+  saved: random_large__XRAY_PENGWIN_011_0118__frag004__RI__large__spread0.002.png
+[random_large] XRAY_PENGWIN_054_0264
+  saved: random_large__XRAY_PENGWIN_054_0264__frag001__LI__large__spread0.001.png
+[random_large] XRAY_PENGWIN_077_0309
+  saved: random_large__XRAY_PENGWIN_077_0309__frag001__LI__large__spread0.007.png
+[random_large] XRAY_PENGWIN_074_0459
+  saved: random_large__XRAY_PENGWIN_074_0459__frag000__SA__large__spread0.001.png
+
+Done. 25 figures saved to: data/flowsdf-moe-predictions/test/stepsize_comparison/comparisons
+========================================
+end : Wed Jul  8 16:47:10 CEST 2026
+========================================

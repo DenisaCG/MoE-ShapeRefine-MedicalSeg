@@ -1,0 +1,72 @@
+============================================================================================== 
+Warning! Mixing Conda and module environments may lead to corruption of the
+user environment. 
+We do not recommend users mixing those two environments unless absolutely
+necessary. Note that 
+SURF does not provide any support for Conda environment.
+For more information, please refer to our software policy page:
+https://servicedesk.surf.nl/wiki/display/WIKI/Software+policy+Snellius#SoftwarepolicySnellius-UseofAnacondaandMinicondaenvironmentsonSnellius 
+
+Remember that many packages have already been installed on the system and can
+be loaded using 
+the 'module load <package__name>' command. If you are uncertain if a package is
+already available 
+on the system, please use 'module avail' or 'module spider' to search for it.
+============================================================================================== 
+========================================
+job id : 24491098
+host   : tcn186.local.snellius.surf.nl
+start  : Wed Jul  8 13:34:42 CEST 2026
+python : /home/aramautar2/.conda/envs/MoE/bin/python
+ode-steps: 60
+========================================
+Loading delta CSV: data/flowsdf-moe-predictions/test/stepsize_60/csv/evaluation_delta.csv
+  26453 fragments
+Building X-ray image map …
+Selected 20 fragments — generating figures …
+
+[best] XRAY_PENGWIN_083_0445
+  saved: best__XRAY_PENGWIN_083_0445__frag003__LI__small__delta+0.599.png
+[best] XRAY_PENGWIN_090_0487
+  saved: best__XRAY_PENGWIN_090_0487__frag000__SA__small__delta+0.596.png
+[best] XRAY_PENGWIN_095_0497
+  saved: best__XRAY_PENGWIN_095_0497__frag004__RI__small__delta+0.437.png
+[best] XRAY_PENGWIN_032_0372
+  saved: best__XRAY_PENGWIN_032_0372__frag005__RI__small__delta+0.432.png
+[best] XRAY_PENGWIN_079_0396
+  saved: best__XRAY_PENGWIN_079_0396__frag005__RI__small__delta+0.427.png
+[worst] XRAY_PENGWIN_074_0068
+  saved: worst__XRAY_PENGWIN_074_0068__frag001__SA__small__delta-0.864.png
+[worst] XRAY_PENGWIN_008_0246
+  saved: worst__XRAY_PENGWIN_008_0246__frag004__RI__small__delta-0.843.png
+[worst] XRAY_PENGWIN_076_0041
+  saved: worst__XRAY_PENGWIN_076_0041__frag001__SA__small__delta-0.843.png
+[worst] XRAY_PENGWIN_074_0289
+  saved: worst__XRAY_PENGWIN_074_0289__frag004__RI__small__delta-0.837.png
+[worst] XRAY_PENGWIN_077_0245
+  saved: worst__XRAY_PENGWIN_077_0245__frag003__LI__small__delta-0.837.png
+[random_small] XRAY_PENGWIN_079_0277
+  saved: random_small__XRAY_PENGWIN_079_0277__frag002__LI__small__delta-0.149.png
+[random_small] XRAY_PENGWIN_045_0340
+  saved: random_small__XRAY_PENGWIN_045_0340__frag000__SA__small__delta-0.006.png
+[random_small] XRAY_PENGWIN_066_0424
+  saved: random_small__XRAY_PENGWIN_066_0424__frag001__SA__small__delta+0.029.png
+[random_small] XRAY_PENGWIN_009_0332
+  saved: random_small__XRAY_PENGWIN_009_0332__frag003__RI__small__delta-0.138.png
+[random_small] XRAY_PENGWIN_045_0140
+  saved: random_small__XRAY_PENGWIN_045_0140__frag001__SA__small__delta+0.003.png
+[random_large] XRAY_PENGWIN_098_0188
+  saved: random_large__XRAY_PENGWIN_098_0188__frag002__LI__large__delta-0.000.png
+[random_large] XRAY_PENGWIN_011_0118
+  saved: random_large__XRAY_PENGWIN_011_0118__frag004__RI__large__delta+0.010.png
+[random_large] XRAY_PENGWIN_054_0264
+  saved: random_large__XRAY_PENGWIN_054_0264__frag000__SA__large__delta+0.002.png
+[random_large] XRAY_PENGWIN_077_0284
+  saved: random_large__XRAY_PENGWIN_077_0284__frag004__RI__large__delta-0.009.png
+[random_large] XRAY_PENGWIN_074_0456
+  saved: random_large__XRAY_PENGWIN_074_0456__frag003__RI__large__delta+0.027.png
+
+Done. 20 figures saved to: data/flowsdf-moe-predictions/test/stepsize_60/visualizations
+========================================
+end : Wed Jul  8 13:35:24 CEST 2026
+========================================

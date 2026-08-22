@@ -18,7 +18,7 @@ preprocessing differs.
 Usage:
     python train_roi.py [--expert expert_small|expert_large|both] [OPTIONS]
 
-    python train_roi.py --expert both --epochs 20 --batch-size 64 --large-subsample 17000
+    python train_roi.py --expert both --epochs 40 --patience 10 --batch-size 64 --large-subsample 17000
     python train_roi.py --no-wandb --expert expert_small   # disable W&B
 """
 from __future__ import annotations
@@ -71,6 +71,7 @@ def wandb_init(args: argparse.Namespace, expert_id: str) -> bool:
             config={
                 "expert":          expert_id,
                 "epochs":          args.epochs,
+                "patience":        args.patience,
                 "lr":              args.lr,
                 "batch_size":      args.batch_size,
                 "w_boundary":      args.w_boundary,
@@ -277,12 +278,15 @@ def train_expert(
     model     = CNNExpert(c_in=258).to(device)
     optimizer = AdamW(model.parameters(), lr=args.lr, weight_decay=1e-4)
 
-    wb_active     = wandb_init(args, expert_id)
-    best_val_loss = float("inf")
+    wb_active      = wandb_init(args, expert_id)
+    best_val_loss  = float("inf")
+    epochs_no_improve = 0
+    last_epoch     = 0
     train_losses: list[float] = []
     val_losses:   list[float] = []
 
     for epoch in range(1, args.epochs + 1):
+        last_epoch = epoch
         tag = f"[{expert_id}] {epoch}/{args.epochs}"
 
         train_loss = run_one_epoch(
@@ -311,15 +315,25 @@ def train_expert(
 
         if val_loss < best_val_loss:
             best_val_loss = val_loss
+            epochs_no_improve = 0
             ckpt = args.checkpoint_dir / f"{expert_id}_best.pth"
             torch.save(
                 {"epoch": epoch, "model_state": model.state_dict(), "val_loss": val_loss},
                 ckpt,
             )
             print(f"  -> best checkpoint: {ckpt}")
+        else:
+            epochs_no_improve += 1
+            if epochs_no_improve >= args.patience:
+                print(
+                    f"[{expert_id}] early stopping at epoch {epoch} "
+                    f"(no val improvement for {args.patience} epochs, "
+                    f"best_val_loss={best_val_loss:.4f})"
+                )
+                break
 
     final = args.checkpoint_dir / f"{expert_id}_final.pth"
-    torch.save({"epoch": args.epochs, "model_state": model.state_dict()}, final)
+    torch.save({"epoch": last_epoch, "model_state": model.state_dict()}, final)
     print(f"[{expert_id}] done. Final: {final}")
 
     save_loss_curve(train_losses, val_losses, expert_id, args.checkpoint_dir)
@@ -331,7 +345,10 @@ def parse_args() -> argparse.Namespace:
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("--expert", choices=["expert_small", "expert_large", "both"], default="both")
-    parser.add_argument("--epochs",          type=int,   default=20)
+    parser.add_argument("--epochs",          type=int,   default=40)
+    parser.add_argument("--patience",        type=int,   default=10,
+                        help="Early-stopping patience: stop after this many epochs "
+                             "without val-loss improvement (tracked independently per expert).")
     parser.add_argument("--lr",              type=float, default=1e-4)
     parser.add_argument("--batch-size",      type=int,   default=8)
     parser.add_argument("--num-workers",     type=int,   default=4)
@@ -345,6 +362,17 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--large-subsample", type=int,   default=None)
     parser.add_argument("--checkpoint-dir",  type=Path,
                         default=PROJECT_ROOT / "checkpoints" / "cnnROI")
+    parser.add_argument(
+        "--gating-csv-dir", type=Path, default=None,
+        help=(
+            "Directory containing gated_{split}_records.csv. Defaults to "
+            "src/gating_mechanism/ (the canonical 5402-threshold area routing). "
+            "Point this at an alternate gating output directory (e.g. a "
+            "different --threshold or --routing random run of "
+            "gating_mechanism.py) to train this expert on a different "
+            "routing ablation arm."
+        ),
+    )
     parser.add_argument("--wandb-project",   type=str,   default="moe-shaprefine")
     parser.add_argument("--no-wandb",        action="store_true",
                         help="Disable W&B logging. Loss curve PNG is always saved locally.")
@@ -361,16 +389,20 @@ def main() -> None:
     experts = ["expert_small", "expert_large"] if args.expert == "both" else [args.expert]
 
     print("Building dataloaders …")
+    if args.gating_csv_dir is not None:
+        print(f"  gating csv dir: {args.gating_csv_dir}")
     train_loaders = build_expert_dataloaders(
         split="train",
         batch_size=args.batch_size,
         num_workers=args.num_workers,
         large_subsample=args.large_subsample,
+        csv_dir=args.gating_csv_dir,
     )
     val_loaders = build_expert_dataloaders(
         split="val",
         batch_size=args.batch_size,
         num_workers=args.num_workers,
+        csv_dir=args.gating_csv_dir,
     )
 
     for expert_id in experts:

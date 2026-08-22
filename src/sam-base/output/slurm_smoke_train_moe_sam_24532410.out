@@ -1,0 +1,71 @@
+============================================================================================== 
+Warning! Mixing Conda and module environments may lead to corruption of the
+user environment. 
+We do not recommend users mixing those two environments unless absolutely
+necessary. Note that 
+SURF does not provide any support for Conda environment.
+For more information, please refer to our software policy page:
+https://servicedesk.surf.nl/wiki/display/WIKI/Software+policy+Snellius#SoftwarepolicySnellius-UseofAnacondaandMinicondaenvironmentsonSnellius 
+
+Remember that many packages have already been installed on the system and can
+be loaded using 
+the 'module load <package__name>' command. If you are uncertain if a package is
+already available 
+on the system, please use 'module avail' or 'module spider' to search for it.
+============================================================================================== 
+========================================
+job id  : 24532410
+host    : gcn13.local.snellius.surf.nl
+start   : Fri Jul 10 20:00:35 CEST 2026
+gpu     : NVIDIA A100-SXM4-40GB, 40960 MiB
+python  : /home/aramautar2/.conda/envs/MoE/bin/python
+========================================
+
+--- Step 1: smoke gating CSVs from data/sam-predictions/metadata.jsonl ---
+[train]:   0%|          | 0/5 [00:00<?, ?case/s][train]: 100%|██████████| 5/5 [00:00<00:00, 59.11case/s]
+Saved 20 train fragments -> src/sam-base/smoke_test/gating_csvs/gated_train_records.csv
+expert
+expert_large    20
+[train] total=20  expert_small=0 (0.00%)  expert_large=20 (100.00%)
+[val]:   0%|          | 0/5 [00:00<?, ?case/s][val]: 100%|██████████| 5/5 [00:00<00:00, 63.10case/s]
+Saved 20 val fragments -> src/sam-base/smoke_test/gating_csvs/gated_val_records.csv
+expert
+expert_large    20
+[val] total=20  expert_small=0 (0.00%)  expert_large=20 (100.00%)
+[test]:   0%|          | 0/5 [00:00<?, ?case/s][test]: 100%|██████████| 5/5 [00:00<00:00, 65.37case/s]
+Saved 19 test fragments -> src/sam-base/smoke_test/gating_csvs/gated_test_records.csv
+expert
+expert_large    19
+[test] total=19  expert_small=0 (0.00%)  expert_large=19 (100.00%)
+
+Routing split summary (all splits):
+split        total   small_n   small_%   large_n   large_%
+----------------------------------------------------------
+train           20         0     0.00%        20   100.00%
+val             20         0     0.00%        20   100.00%
+test            19         0     0.00%        19   100.00%
+
+
+--- Step 2: verify train_moe_sam.py starts with --gating-csv-dir (expert_large, 1 epoch) ---
+device: cuda
+Building dataloaders …
+  gating csv dir: src/sam-base/smoke_test/gating_csvs
+[train] expert_small: 0 fragments
+[train] expert_large: 20 fragments
+[val] expert_small: 0 fragments
+[val] expert_large: 20 fragments
+
+============================================================
+Training expert_large
+============================================================
+[expert_large] 1/1 train:   0%|          | 0/10 [00:00<?, ?it/s]/home/aramautar2/.conda/envs/MoE/lib/python3.10/site-packages/torch/nn/modules/conv.py:459: UserWarning: Applied workaround for CuDNN issue, install nvrtc.so (Triggered internally at /opt/conda/conda-bld/pytorch_1682343995026/work/aten/src/ATen/native/cudnn/Conv_v8.cpp:80.)
+  return F.conv2d(input, weight, bias, self.stride,
+[expert_large] 1/1 train:  10%|█         | 1/10 [00:01<00:13,  1.48s/it][expert_large] 1/1 train:  80%|████████  | 8/10 [00:01<00:00,  6.76it/s]                                                                        [expert_large] 1/1 val:   0%|          | 0/10 [00:00<?, ?it/s][expert_large] 1/1 val:  10%|█         | 1/10 [00:00<00:02,  3.10it/s][expert_large] 1/1 val:  50%|█████     | 5/10 [00:01<00:01,  3.22it/s][expert_large] 1/1 val:  90%|█████████ | 9/10 [00:01<00:00,  6.15it/s]                                                                      [expert_large] 1/1  train=0.6419  val=0.7431
+  -> best checkpoint: src/sam-base/smoke_test/checkpoints/expert_large_best.pth
+[expert_large] done. Final: src/sam-base/smoke_test/checkpoints/expert_large_final.pth
+  Loss curve saved: src/sam-base/smoke_test/checkpoints/expert_large_loss_curve.png
+
+Smoke test finished — SAM gating CSV generation and train_moe_sam.py --gating-csv-dir startup both verified.
+========================================
+end : Fri Jul 10 20:00:49 CEST 2026
+========================================

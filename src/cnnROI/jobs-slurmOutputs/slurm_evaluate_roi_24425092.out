@@ -1,0 +1,202 @@
+============================================================================================== 
+Warning! Mixing Conda and module environments may lead to corruption of the
+user environment. 
+We do not recommend users mixing those two environments unless absolutely
+necessary. Note that 
+SURF does not provide any support for Conda environment.
+For more information, please refer to our software policy page:
+https://servicedesk.surf.nl/wiki/display/WIKI/Software+policy+Snellius#SoftwarepolicySnellius-UseofAnacondaandMinicondaenvironmentsonSnellius 
+
+Remember that many packages have already been installed on the system and can
+be loaded using 
+the 'module load <package__name>' command. If you are uncertain if a package is
+already available 
+on the system, please use 'module avail' or 'module spider' to search for it.
+============================================================================================== 
+========================================
+job id  : 24425092
+host    : tcn393.local.snellius.surf.nl
+start   : Sat Jul  4 14:38:38 CEST 2026
+========================================
+prediction metadata: /scratch-local/aramautar2.24425092/tmp9fwhra9q.jsonl
+prediction mask root: /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/data/roi-predictions/binary_masks
+box metadata: /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/data/bounding-boxes-xrays/metadata.jsonl
+output csv: /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/data/roi-predictions/evaluation_roi.csv
+records: 5000
+limit: no
+skip boundary: False
+metric space: original
+num workers: 8
+area threshold: 146285.71166992188
+Evaluating predictions:   0%|          | 0/5000 [00:00<?, ?it/s]Evaluating predictions:   0%|          | 1/5000 [00:02<3:41:44,  2.66s/it]Evaluating predictions:   1%|          | 33/5000 [00:03<05:47, 14.28it/s] Evaluating predictions:   1%|          | 49/5000 [00:03<03:55, 20.98it/s]Evaluating predictions:   3%|▎         | 129/5000 [00:05<02:47, 29.13it/s]Evaluating predictions:   3%|▎         | 161/5000 [00:05<02:05, 38.69it/s]Evaluating predictions:   4%|▎         | 177/5000 [00:06<01:54, 41.94it/s]Evaluating predictions:   4%|▍         | 209/5000 [00:06<01:41, 47.04it/s]Evaluating predictions:   4%|▍         | 225/5000 [00:06<01:41, 47.27it/s]Evaluating predictions:   5%|▌         | 257/5000 [00:09<02:52, 27.42it/s]Evaluating predictions:   6%|▌         | 289/5000 [00:09<02:08, 36.76it/s]Evaluating predictions:   7%|▋         | 353/5000 [00:09<01:11, 64.73it/s]Evaluating predictions:   7%|▋         | 369/5000 [00:09<01:09, 66.17it/s]Evaluating predictions:   8%|▊         | 385/5000 [00:11<02:36, 29.52it/s]Evaluating predictions:   8%|▊         | 417/5000 [00:12<01:59, 38.50it/s]Evaluating predictions:  10%|▉         | 481/5000 [00:12<01:14, 60.73it/s]Evaluating predictions:  10%|▉         | 497/5000 [00:12<01:13, 61.08it/s]Evaluating predictions:  10%|█         | 513/5000 [00:14<02:36, 28.71it/s]Evaluating predictions:  12%|█▏        | 609/5000 [00:14<01:05, 67.26it/s]Evaluating predictions:  13%|█▎        | 634/5000 [00:15<01:09, 62.52it/s]Evaluating predictions:  13%|█▎        | 653/5000 [00:17<02:15, 32.19it/s]Evaluating predictions:  13%|█▎        | 673/5000 [00:17<02:05, 34.42it/s]Evaluating predictions:  15%|█▍        | 737/5000 [00:17<01:09, 61.78it/s]Evaluating predictions:  15%|█▌        | 760/5000 [00:18<01:09, 60.83it/s]Evaluating predictions:  16%|█▌        | 778/5000 [00:20<02:20, 29.97it/s]Evaluating predictions:  16%|█▌        | 801/5000 [00:20<01:58, 35.44it/s]Evaluating predictions:  18%|█▊        | 897/5000 [00:22<01:34, 43.38it/s]Evaluating predictions:  19%|█▉        | 945/5000 [00:22<01:11, 56.51it/s]Evaluating predictions:  20%|█▉        | 977/5000 [00:22<00:59, 67.55it/s]Evaluating predictions:  20%|█▉        | 993/5000 [00:23<01:05, 61.44it/s]Evaluating predictions:  20%|██        | 1025/5000 [00:24<01:41, 39.02it/s]Evaluating predictions:  21%|██        | 1041/5000 [00:24<01:30, 43.92it/s]Evaluating predictions:  22%|██▏       | 1089/5000 [00:25<01:01, 63.15it/s]Evaluating predictions:  22%|██▏       | 1105/5000 [00:25<01:10, 55.11it/s]Evaluating predictions:  23%|██▎       | 1137/5000 [00:26<01:31, 42.23it/s]Evaluating predictions:  23%|██▎       | 1153/5000 [00:28<02:33, 25.04it/s]Evaluating predictions:  23%|██▎       | 1169/5000 [00:28<02:16, 28.12it/s]Evaluating predictions:  25%|██▌       | 1265/5000 [00:29<00:57, 65.16it/s]Evaluating predictions:  26%|██▌       | 1281/5000 [00:31<01:40, 37.18it/s]Evaluating predictions:  26%|██▋       | 1313/5000 [00:31<01:30, 40.81it/s]Evaluating predictions:  27%|██▋       | 1345/5000 [00:31<01:07, 53.75it/s]Evaluating predictions:  28%|██▊       | 1393/5000 [00:32<00:52, 68.55it/s]Evaluating predictions:  28%|██▊       | 1409/5000 [00:33<01:42, 34.91it/s]Evaluating predictions:  29%|██▉       | 1441/5000 [00:34<01:27, 40.74it/s]Evaluating predictions:  29%|██▉       | 1457/5000 [00:35<01:45, 33.63it/s]Evaluating predictions:  29%|██▉       | 1473/5000 [00:35<01:29, 39.32it/s]Evaluating predictions:  31%|███       | 1537/5000 [00:36<01:18, 44.20it/s]Evaluating predictions:  31%|███▏      | 1569/5000 [00:36<01:04, 52.85it/s]Evaluating predictions:  32%|███▏      | 1585/5000 [00:37<01:11, 47.65it/s]Evaluating predictions:  32%|███▏      | 1601/5000 [00:37<01:10, 48.47it/s]Evaluating predictions:  33%|███▎      | 1633/5000 [00:37<00:51, 65.39it/s]Evaluating predictions:  33%|███▎      | 1665/5000 [00:39<01:15, 43.88it/s]Evaluating predictions:  34%|███▍      | 1697/5000 [00:39<01:10, 46.97it/s]Evaluating predictions:  34%|███▍      | 1713/5000 [00:40<01:21, 40.37it/s]Evaluating predictions:  35%|███▍      | 1729/5000 [00:40<01:17, 42.31it/s]Evaluating predictions:  35%|███▍      | 1745/5000 [00:40<01:04, 50.14it/s]Evaluating predictions:  36%|███▌      | 1793/5000 [00:41<01:06, 48.02it/s]Evaluating predictions:  36%|███▌      | 1809/5000 [00:42<01:05, 48.75it/s]Evaluating predictions:  36%|███▋      | 1825/5000 [00:42<01:07, 47.01it/s]Evaluating predictions:  37%|███▋      | 1841/5000 [00:43<01:34, 33.49it/s]Evaluating predictions:  37%|███▋      | 1857/5000 [00:43<01:28, 35.52it/s]Evaluating predictions:  37%|███▋      | 1873/5000 [00:44<01:40, 31.24it/s]Evaluating predictions:  38%|███▊      | 1921/5000 [00:44<00:55, 55.66it/s]Evaluating predictions:  39%|███▊      | 1937/5000 [00:45<01:01, 49.77it/s]Evaluating predictions:  39%|███▉      | 1953/5000 [00:45<01:01, 49.29it/s]Evaluating predictions:  39%|███▉      | 1969/5000 [00:46<01:22, 36.75it/s]Evaluating predictions:  40%|███▉      | 1985/5000 [00:46<01:22, 36.45it/s]Evaluating predictions:  40%|████      | 2001/5000 [00:47<01:22, 36.48it/s]Evaluating predictions:  40%|████      | 2017/5000 [00:47<01:09, 43.17it/s]Evaluating predictions:  41%|████▏     | 2065/5000 [00:47<00:45, 63.87it/s]Evaluating predictions:  42%|████▏     | 2097/5000 [00:48<00:55, 52.44it/s]Evaluating predictions:  42%|████▏     | 2113/5000 [00:49<01:05, 43.99it/s]Evaluating predictions:  43%|████▎     | 2129/5000 [00:49<01:01, 46.62it/s]Evaluating predictions:  43%|████▎     | 2145/5000 [00:49<00:51, 55.65it/s]Evaluating predictions:  43%|████▎     | 2161/5000 [00:49<00:43, 65.44it/s]Evaluating predictions:  44%|████▎     | 2177/5000 [00:50<00:51, 55.11it/s]Evaluating predictions:  44%|████▍     | 2193/5000 [00:51<01:20, 34.89it/s]Evaluating predictions:  44%|████▍     | 2225/5000 [00:51<01:05, 42.22it/s]Evaluating predictions:  45%|████▍     | 2241/5000 [00:52<01:15, 36.34it/s]Evaluating predictions:  45%|████▌     | 2257/5000 [00:52<01:07, 40.89it/s]Evaluating predictions:  46%|████▌     | 2289/5000 [00:52<00:42, 63.82it/s]Evaluating predictions:  46%|████▌     | 2305/5000 [00:52<00:39, 67.84it/s]Evaluating predictions:  46%|████▋     | 2321/5000 [00:53<00:48, 55.11it/s]Evaluating predictions:  47%|████▋     | 2337/5000 [00:53<00:41, 63.52it/s]Evaluating predictions:  47%|████▋     | 2353/5000 [00:53<00:54, 48.20it/s]Evaluating predictions:  47%|████▋     | 2369/5000 [00:55<01:47, 24.58it/s]Evaluating predictions:  48%|████▊     | 2385/5000 [00:56<01:47, 24.31it/s]Evaluating predictions:  48%|████▊     | 2401/5000 [00:56<01:26, 29.97it/s]Evaluating predictions:  50%|████▉     | 2481/5000 [00:56<00:31, 78.75it/s]Evaluating predictions:  50%|████▉     | 2497/5000 [00:58<01:09, 35.99it/s]Evaluating predictions:  50%|█████     | 2513/5000 [00:58<01:00, 41.22it/s]Evaluating predictions:  51%|█████     | 2529/5000 [00:58<01:00, 40.70it/s]Evaluating predictions:  51%|█████     | 2545/5000 [00:58<00:51, 47.49it/s]Evaluating predictions:  51%|█████     | 2561/5000 [00:59<00:46, 52.02it/s]Evaluating predictions:  52%|█████▏    | 2594/5000 [00:59<00:29, 80.80it/s]Evaluating predictions:  52%|█████▏    | 2610/5000 [00:59<00:29, 82.21it/s]Evaluating predictions:  52%|█████▎    | 2625/5000 [01:01<01:42, 23.19it/s]Evaluating predictions:  53%|█████▎    | 2641/5000 [01:01<01:21, 28.80it/s]Evaluating predictions:  53%|█████▎    | 2657/5000 [01:02<01:11, 32.61it/s]Evaluating predictions:  54%|█████▍    | 2721/5000 [01:02<00:33, 68.96it/s]Evaluating predictions:  55%|█████▍    | 2740/5000 [01:02<00:28, 79.33it/s]Evaluating predictions:  55%|█████▌    | 2755/5000 [01:04<01:12, 31.14it/s]Evaluating predictions:  55%|█████▌    | 2769/5000 [01:04<01:13, 30.15it/s]Evaluating predictions:  56%|█████▌    | 2785/5000 [01:04<01:03, 34.78it/s]Evaluating predictions:  57%|█████▋    | 2849/5000 [01:05<00:29, 72.27it/s]Evaluating predictions:  58%|█████▊    | 2881/5000 [01:06<00:51, 40.92it/s]Evaluating predictions:  58%|█████▊    | 2897/5000 [01:07<00:54, 38.72it/s]Evaluating predictions:  59%|█████▊    | 2929/5000 [01:07<00:46, 44.13it/s]Evaluating predictions:  59%|█████▉    | 2945/5000 [01:07<00:40, 50.35it/s]Evaluating predictions:  60%|█████▉    | 2977/5000 [01:08<00:28, 70.95it/s]Evaluating predictions:  60%|██████    | 3009/5000 [01:09<00:48, 41.42it/s]Evaluating predictions:  60%|██████    | 3025/5000 [01:09<00:47, 41.65it/s]Evaluating predictions:  61%|██████    | 3057/5000 [01:10<00:43, 44.88it/s]Evaluating predictions:  61%|██████▏   | 3073/5000 [01:10<00:37, 51.34it/s]Evaluating predictions:  62%|██████▏   | 3089/5000 [01:10<00:35, 53.21it/s]Evaluating predictions:  63%|██████▎   | 3137/5000 [01:12<00:52, 35.37it/s]Evaluating predictions:  63%|██████▎   | 3153/5000 [01:12<00:48, 38.26it/s]Evaluating predictions:  64%|██████▍   | 3217/5000 [01:13<00:28, 62.85it/s]Evaluating predictions:  65%|██████▍   | 3233/5000 [01:14<00:40, 44.00it/s]Evaluating predictions:  65%|██████▍   | 3249/5000 [01:14<00:35, 49.04it/s]Evaluating predictions:  65%|██████▌   | 3265/5000 [01:16<01:03, 27.12it/s]Evaluating predictions:  67%|██████▋   | 3345/5000 [01:16<00:28, 58.10it/s]Evaluating predictions:  67%|██████▋   | 3361/5000 [01:17<00:39, 42.00it/s]Evaluating predictions:  68%|██████▊   | 3377/5000 [01:17<00:36, 44.87it/s]Evaluating predictions:  68%|██████▊   | 3393/5000 [01:18<00:41, 38.65it/s]Evaluating predictions:  69%|██████▉   | 3441/5000 [01:18<00:26, 59.45it/s]Evaluating predictions:  69%|██████▉   | 3473/5000 [01:18<00:22, 66.78it/s]Evaluating predictions:  70%|██████▉   | 3489/5000 [01:19<00:35, 42.11it/s]Evaluating predictions:  70%|███████   | 3521/5000 [01:20<00:31, 47.46it/s]Evaluating predictions:  71%|███████   | 3537/5000 [01:20<00:28, 51.83it/s]Evaluating predictions:  71%|███████   | 3553/5000 [01:20<00:24, 58.01it/s]Evaluating predictions:  71%|███████▏  | 3569/5000 [01:21<00:24, 58.69it/s]Evaluating predictions:  72%|███████▏  | 3585/5000 [01:21<00:23, 59.81it/s]Evaluating predictions:  72%|███████▏  | 3601/5000 [01:21<00:23, 59.25it/s]Evaluating predictions:  72%|███████▏  | 3617/5000 [01:22<00:41, 33.24it/s]Evaluating predictions:  73%|███████▎  | 3633/5000 [01:22<00:32, 41.68it/s]Evaluating predictions:  73%|███████▎  | 3649/5000 [01:23<00:36, 36.96it/s]Evaluating predictions:  73%|███████▎  | 3665/5000 [01:23<00:28, 46.16it/s]Evaluating predictions:  74%|███████▎  | 3681/5000 [01:23<00:24, 53.52it/s]Evaluating predictions:  74%|███████▍  | 3697/5000 [01:24<00:27, 46.96it/s]Evaluating predictions:  75%|███████▍  | 3729/5000 [01:24<00:20, 61.25it/s]Evaluating predictions:  75%|███████▍  | 3745/5000 [01:25<00:41, 30.49it/s]Evaluating predictions:  76%|███████▌  | 3777/5000 [01:26<00:28, 43.15it/s]Evaluating predictions:  76%|███████▌  | 3793/5000 [01:26<00:26, 46.10it/s]Evaluating predictions:  76%|███████▌  | 3809/5000 [01:26<00:23, 51.25it/s]Evaluating predictions:  77%|███████▋  | 3857/5000 [01:26<00:12, 89.30it/s]Evaluating predictions:  77%|███████▋  | 3873/5000 [01:29<00:43, 26.05it/s]Evaluating predictions:  80%|████████  | 4001/5000 [01:30<00:22, 45.01it/s]Evaluating predictions:  80%|████████  | 4017/5000 [01:31<00:21, 45.86it/s]Evaluating predictions:  81%|████████  | 4049/5000 [01:31<00:17, 55.53it/s]Evaluating predictions:  81%|████████▏ | 4065/5000 [01:31<00:17, 53.77it/s]Evaluating predictions:  82%|████████▏ | 4081/5000 [01:32<00:16, 55.00it/s]Evaluating predictions:  82%|████████▏ | 4097/5000 [01:32<00:17, 52.53it/s]Evaluating predictions:  83%|████████▎ | 4129/5000 [01:34<00:32, 26.96it/s]Evaluating predictions:  84%|████████▎ | 4177/5000 [01:35<00:21, 38.27it/s]Evaluating predictions:  84%|████████▍ | 4193/5000 [01:35<00:18, 43.19it/s]Evaluating predictions:  85%|████████▍ | 4241/5000 [01:35<00:11, 66.64it/s]Evaluating predictions:  85%|████████▌ | 4257/5000 [01:38<00:29, 25.23it/s]Evaluating predictions:  86%|████████▌ | 4289/5000 [01:38<00:21, 32.99it/s]Evaluating predictions:  86%|████████▌ | 4305/5000 [01:39<00:21, 31.72it/s]Evaluating predictions:  88%|████████▊ | 4385/5000 [01:40<00:15, 38.64it/s]Evaluating predictions:  89%|████████▉ | 4449/5000 [01:41<00:10, 50.61it/s]Evaluating predictions:  90%|█████████ | 4513/5000 [01:43<00:11, 43.98it/s]Evaluating predictions:  91%|█████████ | 4561/5000 [01:43<00:07, 58.54it/s]Evaluating predictions:  92%|█████████▏| 4578/5000 [01:43<00:07, 54.57it/s]Evaluating predictions:  92%|█████████▏| 4593/5000 [01:43<00:06, 58.64it/s]Evaluating predictions:  92%|█████████▎| 4625/5000 [01:44<00:05, 71.51it/s]Evaluating predictions:  93%|█████████▎| 4641/5000 [01:45<00:10, 32.77it/s]Evaluating predictions:  94%|█████████▍| 4705/5000 [01:46<00:06, 48.39it/s]Evaluating predictions:  95%|█████████▌| 4753/5000 [01:46<00:03, 63.81it/s]Evaluating predictions:  95%|█████████▌| 4769/5000 [01:48<00:06, 33.78it/s]Evaluating predictions:  96%|█████████▌| 4785/5000 [01:48<00:05, 38.71it/s]Evaluating predictions:  97%|█████████▋| 4833/5000 [01:49<00:03, 54.13it/s]Evaluating predictions:  98%|█████████▊| 4897/5000 [01:51<00:02, 38.35it/s]Evaluating predictions:  99%|█████████▊| 4929/5000 [01:51<00:01, 47.74it/s]Evaluating predictions:  99%|█████████▉| 4945/5000 [01:52<00:01, 44.69it/s]Evaluating predictions:  99%|█████████▉| 4961/5000 [01:52<00:00, 46.51it/s]Evaluating predictions: 100%|██████████| 5000/5000 [01:52<00:00, 44.42it/s]
+
+Evaluation summary
+==========================================================================================
+Image records evaluated: 5000
+Fragment rows written: 26457
+Failed records: 0
+Empty predictions: 1
+Empty GT masks: 0
+Area threshold on 1024 grid: 146285.71166992188
+
+Overall mean metrics:
+group                         n      dice_mean       iou_mean      hd95_mean      assd_mean
+-------------------------------------------------------------------------------------------
+overall                   26457         0.7979         0.6763        36.7403        10.2363
+
+Per-class mean metrics:
+group                         n      dice_mean       iou_mean      hd95_mean      assd_mean
+-------------------------------------------------------------------------------------------
+SA                         7083         0.7712         0.6390        40.2443        12.3138
+LI                         9808         0.8062         0.6873        35.5375         9.4344
+RI                         9566         0.8092         0.6926        35.3790         9.5200
+
+Per-size mean metrics:
+group                         n      dice_mean       iou_mean      hd95_mean      assd_mean
+-------------------------------------------------------------------------------------------
+small                     13228         0.7813         0.6552        20.3295         6.3918
+large                     13229         0.8145         0.6974        53.1487        14.0801
+
+Per-class and per-size mean metrics:
+group                         n      dice_mean       iou_mean      hd95_mean      assd_mean
+-------------------------------------------------------------------------------------------
+SA/small                   3127         0.7440         0.6070        23.4843         7.8674
+SA/large                   3956         0.7928         0.6642        53.4921        15.8285
+LI/small                   5188         0.7941         0.6713        18.6823         5.6686
+LI/large                   4620         0.8197         0.7052        54.4613        13.6623
+RI/small                   4913         0.7916         0.6689        20.0607         6.2162
+RI/large                   4653         0.8279         0.7177        51.5534        13.0085
+==========================================================================================
+
+Saved evaluation CSV: /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/data/roi-predictions/evaluation_roi.csv
+Metadata filter: 5000/50000 images have predictions in binary_masks/
+Running: /home/aramautar2/.conda/envs/MoE/bin/python /gpfs/home5/aramautar2/projects/MoE-ShapeRefine-MedicalSeg/evaluation/evaluate_medsam_pengwin.py --pred-mask-root data/roi-predictions/binary_masks --pred-metadata /scratch-local/aramautar2.24425092/tmp9fwhra9q.jsonl --output-csv data/roi-predictions/evaluation_roi.csv --num-workers 8
+
+Delta CSV saved: data/roi-predictions/evaluation_delta.csv
+
+MoE vs MedSAM summary:
+  dice: mean delta = +0.0792  improved = 89.6% of fragments  n = 26453
+  iou: mean delta = +0.1012  improved = 89.6% of fragments  n = 26453
+
+=== cnnROI evaluation summary ===
+Evaluation summary
+==========================================================================================
+CSV: data/roi-predictions/evaluation_roi.csv
+Image records evaluated: 5000
+Fragment rows written: 26457
+Failed records: not stored in CSV
+Empty predictions: 1
+Empty GT masks: 0
+Area threshold on 1024 grid: 146285.71166992188
+
+Overall mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+overall                        26457         0.7979         0.6763        36.7403        10.2363
+
+Per-class mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+SA                              7083         0.7712         0.6390        40.2443        12.3138
+LI                              9808         0.8062         0.6873        35.5375         9.4344
+RI                              9566         0.8092         0.6926        35.3790         9.5200
+
+Per-size mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+small                          13228         0.7813         0.6552        20.3295         6.3918
+large                          13229         0.8145         0.6974        53.1487        14.0801
+
+Per-class and per-size mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+SA/small                        3127         0.7440         0.6070        23.4843         7.8674
+SA/large                        3956         0.7928         0.6642        53.4921        15.8285
+LI/small                        5188         0.7941         0.6713        18.6823         5.6686
+LI/large                        4620         0.8197         0.7052        54.4613        13.6623
+RI/small                        4913         0.7916         0.6689        20.0607         6.2162
+RI/large                        4653         0.8279         0.7177        51.5534        13.0085
+==========================================================================================
+
+=== cnnNoROI evaluation summary (for comparison) ===
+Evaluation summary
+==========================================================================================
+CSV: data/moe-predictions/evaluation_moe.csv
+Image records evaluated: 5000
+Fragment rows written: 26457
+Failed records: not stored in CSV
+Empty predictions: 65
+Empty GT masks: 0
+Area threshold on 1024 grid: 146285.71166992188
+
+Overall mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+overall                        26457         0.7985         0.6789        34.8725         9.7366
+
+Per-class mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+SA                              7083         0.7743         0.6441        38.5000        11.8888
+LI                              9808         0.8059         0.6889        33.5404         8.8769
+RI                              9566         0.8087         0.6943        33.5475         9.0216
+
+Per-size mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+small                          13228         0.7821         0.6595        20.1125         6.2142
+large                          13229         0.8148         0.6982        49.5589        13.2414
+
+Per-class and per-size mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+SA/small                        3127         0.7444         0.6095        24.0802         7.7013
+SA/large                        3956         0.7979         0.6715        49.8688        15.1904
+LI/small                        5188         0.7943         0.6747        18.2407         5.4813
+LI/large                        4620         0.8190         0.7048        50.6482        12.6738
+RI/small                        4913         0.7932         0.6754        19.5579         6.0394
+RI/large                        4653         0.8251         0.7144        48.2137        12.1480
+==========================================================================================
+
+=== MedSAM baseline summary ===
+Evaluation summary
+==========================================================================================
+CSV: data/medsam-predictions/evaluation_pengwin.csv
+Image records evaluated: 49999
+Fragment rows written: 264923
+Failed records: not stored in CSV
+Empty predictions: 75
+Empty GT masks: 0
+Area threshold on 1024 grid: 146463.34837372415
+
+Overall mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+overall                       264923         0.7180         0.5740        39.7350        13.0740
+
+Per-class mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+SA                             71046         0.7194         0.5753        43.4545        14.6705
+LI                             98276         0.7153         0.5708        39.2660        12.6945
+RI                             95601         0.7196         0.5764        37.4533        12.2780
+
+Per-size mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+small                         132460         0.6965         0.5495        22.3864         8.0279
+large                         132463         0.7394         0.5986        57.0733        18.1172
+
+Per-class and per-size mean metrics:
+group                              n      dice_mean       iou_mean      hd95_mean      assd_mean
+------------------------------------------------------------------------------------------------
+SA/small                       30981         0.6905         0.5430        24.8184         8.8552
+SA/large                       40065         0.7418         0.6003        57.8522        19.1632
+LI/small                       51859         0.6996         0.5533        21.1766         7.5860
+LI/large                       46417         0.7328         0.5903        59.4684        18.3997
+RI/small                       49620         0.6969         0.5496        22.1331         7.9734
+RI/large                       45981         0.7441         0.6053        53.9769        16.9208
+==========================================================================================
+========================================
+end : Sat Jul  4 14:40:49 CEST 2026
+========================================
